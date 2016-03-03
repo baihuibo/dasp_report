@@ -1,0 +1,21 @@
+{
+  "name": "dasp_report",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron index.js",
+    "build": "node build.js"
+  },
+  "author": "baihuibo",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-packager": "^5.2.1",
+    "electron-prebuilt": "^0.36.8"
+  },
+  "dependencies": {
+    "easy-zip": "0.0.4",
+    "nodemailer": "^2.2.1"
+  }
+}

@@ -1,0 +1,65 @@
+<md-dialog aria-label="Mango (Fruit)" ng-cloak>
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>设置访问信息</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon>close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div layout layout-padding="">
+                <md-content style="width: 600px;">
+                    <section>
+                        <md-subheader class="md-primary">系统信息</md-subheader>
+                        <md-input-container class="md-block">
+                            <md-icon>home</md-icon>
+                            <input type="text" placeholder="系统名称" ng-model="web.name">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <md-icon>link</md-icon>
+                            <input type="text" placeholder="访问地址" ng-model="web.url" readonly>
+                        </md-input-container>
+                    </section>
+
+                    <section>
+                        <md-subheader class="md-primary">认证信息</md-subheader>
+
+                        <md-input-container class="md-block" ng-if="checkField(web.auth.org)">
+                            <md-icon>star</md-icon>
+                            <input type="text" placeholder="机构代码" ng-model="web.auth.org">
+                        </md-input-container>
+                        <md-input-container class="md-block" ng-if="checkField(web.auth.num)">
+                            <md-icon>people</md-icon>
+                            <input type="text" placeholder="柜员代码" ng-model="web.auth.num">
+                        </md-input-container>
+                        <md-input-container class="md-block" ng-if="checkField(web.auth.name)">
+                            <md-icon>person</md-icon>
+                            <input type="text" placeholder="用户名" ng-model="web.auth.name">
+                        </md-input-container>
+                        <md-input-container class="md-block">
+                            <md-icon>lock</md-icon>
+                            <input type="text" placeholder="密码" ng-model="web.auth.pwd">
+                        </md-input-container>
+                    </section>
+
+                </md-content>
+            </div>
+
+        </md-dialog-content>
+        <md-dialog-actions class="text-right">
+            <md-button ng-click="answer(web)">
+                测试登陆
+            </md-button>
+            <md-button ng-click="answer(web)">
+                保存
+            </md-button>
+            <md-button ng-click="answer()" style="margin-right:20px;">
+                取消
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

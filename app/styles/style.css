@@ -1,0 +1,87 @@
+.drag {
+    -webkit-app-region: drag;
+}
+
+.no-drag {
+    -webkit-app-region: no-drag;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.cu-footer {
+    padding: 12px 24px;
+    font-size: 12px;
+}
+
+.top-toolbar {
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+.cu-navbar .md-button md-icon {
+    transition: color .3s;
+}
+
+.cu-input {
+    margin: 0;
+    font-size: 14px;
+}
+
+.cu-input .md-errors-spacer {
+    display: none;
+}
+
+body {
+    position: relative;
+}
+
+md-select .md-select-value span:first-child {
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+}
+
+md-select-menu[multiple] md-option[aria-selected="true"]:after {
+    font-family: 'Material Icons';
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+    content: "done";
+    position: absolute;
+    right: .7em;
+    font-weight: bold;
+    top: 1em;
+}
+
+md-select-menu[multiple] md-option[aria-selected="true"]:hover:after {
+    content: "clear";
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+md-grid-tile-footer figcaption {
+    width: 100%;
+}
+
+md-datepicker {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+}
+
+md-datepicker .md-datepicker-button,
+md-datepicker .md-datepicker-input-container {
+    margin: 0;
+}

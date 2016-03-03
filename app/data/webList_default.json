@@ -1,0 +1,40 @@
+[
+  {
+    "_type": "dljr",
+    "name": "中国邮政金融客户端管理系统",
+    "url": "http://10.2.0.225/login.jsp",
+    "auth": {
+      "name": "CIM9900274",
+      "pwd": "dljr68859334"
+    },
+    "timer": {
+      "type": "1"
+    }
+  },
+  {
+    "_type": "kfjj",
+    "name": "中国邮政开放式基金信管系统",
+    "url": "http://10.2.3.223/FdimWebApp/login.jsp",
+    "auth": {
+      "org": "11005293",
+      "name": "admin",
+      "pwd": "bocopost"
+    },
+    "timer": {
+      "type": "1"
+    }
+  },
+  {
+    "_type": "dlbx",
+    "name": "代理保险大集中系统",
+    "url": "http://10.2.3.237:7001/ncpai/",
+    "auth": {
+      "org": "11005293",
+      "num": "20150736061",
+      "pwd": "00000000"
+    },
+    "timer": {
+      "type": "1"
+    }
+  }
+]

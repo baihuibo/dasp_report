@@ -1,0 +1,55 @@
+<h3>
+    仪表盘
+</h3>
+
+<md-content>
+    <md-grid-list
+            md-cols-gt-md="4" md-cols="3" md-row-height="5:3"
+            md-gutter="16px" class="cu-grid-list">
+        <md-grid-tile ng-repeat="tile in tiles"
+                      ng-style="{'background': tile.color}" class="md-whiteframe-3dp">
+
+            <md-icon>face</md-icon>
+
+            <md-grid-tile-footer>
+                <div layout="row" layout-align="center center">
+                    <span flex style="margin-left: .5em;">{{tile.name}}</span>
+                    <md-menu>
+                        <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin>menu</md-icon>
+                        </md-button>
+                        <md-menu-content width="3" class="md-dense">
+                            <md-menu-item>
+                                <md-button>
+                                    <md-icon>playlist_add</md-icon>
+                                    启动
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button>
+                                    <md-icon>playlist_add</md-icon>
+                                    设置定时器
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button>
+                                    <md-icon>mode_edit</md-icon>
+                                    修改信息
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
+            </md-grid-tile-footer>
+        </md-grid-tile>
+    </md-grid-list>
+    <hr>
+    <md-list>
+        <md-subheader class="md-no-sticky">运行记录</md-subheader>
+        <md-divider></md-divider>
+        <md-list-item ng-repeat="log in logs" ng-click="showLogDetails(log, $event)">
+            <p flex>{{ log.name }}</p>
+            <span class="md-no-sticky md-caption">{{log.time}}</span>
+        </md-list-item>
+    </md-list>
+</md-content>
