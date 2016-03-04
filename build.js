@@ -13,7 +13,7 @@ pack({
     name: 'dasp_report',
     out: 'output',
     overwrite: true,
-    version: '0.36.8'
+    version: '0.36.9'
 }, function done(err, appPath) {
     if (err) {
         console.log('err : ', err);

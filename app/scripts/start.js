@@ -3,9 +3,10 @@
  */
 import app from 'app';
 import './views/all';
+import config from 'config';
 
 app.config(function ($logProvider) {
-    //$logProvider.debugEnabled(false);
+    $logProvider.debugEnabled(config.logDebugEnabled);
 });
 
 app.run(function ($rootScope, currentWebContents, currentWindow) {

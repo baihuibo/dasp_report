@@ -5,6 +5,7 @@ import 'angular-material';
 import 'angular-electron';
 import 'angular-route';
 import 'angular-resource';
+import 'co';
 import 'lodash';
 import 'moment';
 import './directives';
@@ -80,7 +81,7 @@ base.factory('timer', function ($log) {
     };
 });
 base.factory('ZipFile', function (EasyZip) {
-    return function (files, done) {
+    return function (files, writePath, done) {
         var ez = new EasyZip();
 
         console.time('文件打包用时');

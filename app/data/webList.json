@@ -4,12 +4,13 @@
     "name": "中国邮政金融客户端管理系统",
     "url": "http://10.2.0.225/login.jsp",
     "auth": {
-      "name": "CIM9900274",
+      "name": "CIM9900274asdfasdfasdf",
       "pwd": "dljr68859334"
     },
     "timer": {
       "type": "1"
-    }
+    },
+    "color": "#0277bd"
   },
   {
     "_type": "kfjj",
@@ -22,7 +23,8 @@
     },
     "timer": {
       "type": "1"
-    }
+    },
+    "color": "#b2ebf2"
   },
   {
     "_type": "dlbx",
@@ -35,6 +37,7 @@
     },
     "timer": {
       "type": "1"
-    }
+    },
+    "color": "#b0bec5"
   }
 ]

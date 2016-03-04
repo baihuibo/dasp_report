@@ -61,6 +61,8 @@
     SystemJS.config({
         defaultJSExtensions: true,
         traceurOptions: {
+            debug: true,
+            generators: true
             //https://github.com/google/traceur-compiler/blob/master/src/Options.js#L25
         },
         map: {
@@ -80,6 +82,8 @@
             'material-design-icons': 'bower/material-design-icons/iconfont/material-icons.css',
 
             lodash: 'bower/lodash/dist/lodash.min',
+            co: 'bower/co/co',
+            setimmediate: 'bower/setimmediate/setimmediate',
 
             moment_base: 'bower/moment/moment',
             moment: 'bower/moment/locale/zh-cn',
@@ -95,6 +99,8 @@
             text: 'bower/systemjs-plugin-text/text'
         },
         meta: {
+            setimmediate: {format: 'global'},
+            co: {format: 'global', deps: ['setimmediate']},
             moment_base: {format: 'global'},
             moment: {format: 'global', deps: ['moment_base']},
             angular: {deps: ['jquery']},
