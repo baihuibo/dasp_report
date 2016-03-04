@@ -24,11 +24,14 @@
     "angular-material": "1.0.5",
     "material-design-icons": "^2.1.3",
     "lodash": "^4.5.0",
-    "system.js": "^0.19.22",
+    "system.js": "0.19.22",
     "traceur": "^0.0.102",
     "systemjs-plugin-json": "https://github.com/systemjs/plugin-json.git#^0.1.0",
     "systemjs-plugin-css": "https://github.com/systemjs/plugin-css.git#^0.1.20",
     "systemjs-plugin-text": "https://github.com/systemjs/plugin-text.git#^0.0.4",
-    "angular-electron": "^0.2.1"
+    "angular-electron": "^0.2.1",
+    "moment": "^2.11.2",
+    "angular-route": "^1.5.0",
+    "angular-resource": "^1.5.0"
   }
 }

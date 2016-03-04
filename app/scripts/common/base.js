@@ -1,18 +1,16 @@
 /**
  * Created by baihuibo on 16/1/26.
  */
-import 'angular';
 import 'angular-material';
 import 'angular-electron';
 import 'angular-route';
 import 'angular-resource';
-import 'moment';
 import 'lodash';
+import 'moment';
 import './directives';
-import 'co';
 import config from 'config';
 
-var base = angular.module('base', ['ngMaterial', 'directives', 'angular-electron', 'ngRoute', 'ngResource']);
+var base = angular.module('base', ['directives', 'ngMaterial', 'angular-electron', 'ngRoute', 'ngResource']);
 
 base.constant('config', config);
 

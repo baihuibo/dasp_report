@@ -79,11 +79,10 @@
             'angular-resource': 'bower/angular-resource/angular-resource.min',
             'material-design-icons': 'bower/material-design-icons/iconfont/material-icons.css',
 
-            moment_base: 'bower/moment/moment',
-            moment: 'bower/moment/locale/zh-cn.js',
             lodash: 'bower/lodash/dist/lodash.min',
-            co: 'bower/co/co',
 
+            moment_base: 'bower/moment/moment',
+            moment: 'bower/moment/locale/zh-cn',
             config: 'scripts/config',
             webList: 'data/webList.json',
             webListDefault: 'data/webList_default.json',
@@ -96,14 +95,8 @@
             text: 'bower/systemjs-plugin-text/text'
         },
         meta: {
-            moment_base: {
-                format: 'global'
-            },
-            moment: {
-                format: 'global',
-                deps: ['moment_base']
-            },
-
+            moment_base: {format: 'global'},
+            moment: {format: 'global', deps: ['moment_base']},
             angular: {deps: ['jquery']},
             'angular-electron': {deps: ['angular']},
             'angular-route': {deps: ['angular']},
