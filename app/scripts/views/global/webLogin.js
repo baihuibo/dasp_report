@@ -30,7 +30,7 @@ app.factory('webLogin', function ($q) {
             } else {
                 q.reject(e.args[0]);
             }
-            //document.body.removeChild(wrapper);
+            document.body.removeChild(wrapper);
         });
 
         return q.promise;
