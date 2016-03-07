@@ -9,11 +9,16 @@ app.factory('webLogin', function ($q) {
         var q = $q.defer();
 
         var webview = document.createElement('webview');
+
+        var wrapper = document.createElement('div');
+        wrapper.classList.add('login-box');
+
         webview.src = webInfo.url;
-        webview.classList.add('login-box');
         webview.preload = `${__dirname}/scripts/views/global/webLogin-preload/${webInfo._type}.js`;
 
-        document.body.appendChild(webview);
+        document.body.appendChild(wrapper);
+
+        wrapper.appendChild(webview);
 
         webview.addEventListener('dom-ready', function () {
             webview.send('auth', webInfo.auth);
@@ -25,7 +30,7 @@ app.factory('webLogin', function ($q) {
             } else {
                 q.reject(e.args[0]);
             }
-            document.body.removeChild(webview);
+            //document.body.removeChild(wrapper);
         });
 
         return q.promise;
