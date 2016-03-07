@@ -4,6 +4,8 @@
 import app from 'app';
 import webList from 'webList!json';
 import webListDefault from 'webListDefault!json';
+import './webLogin';
+import './capture';
 
 app.config(function ($routeProvider, $mdDateLocaleProvider) {
     //默认路由
@@ -39,6 +41,19 @@ app.factory('dialogImpr', function () {
 app.filter('dialogOk', function () {
     return function (isCreate) {
         return isCreate ? '确定' : '保存修改';
+    }
+});
+
+app.factory('webLogs', function () {
+    return [];
+});
+
+app.filter('reverse', function () {
+    return function (arr) {
+        if (arr) {
+            return arr.reverse();
+        }
+        return arr;
     }
 });
 
@@ -79,9 +94,25 @@ app.provider('menu', function () {
     }
 });
 
-app.run(function ($rootScope, menu) {
+app.factory('captures', function (webCapture, $q) {
+    return {
+        dljr: function () {
+            var q = $q.defer();
+
+            q.notify();
+            q.reject();
+            q.resolve();
+
+            return q.promise;
+        }
+    }
+});
+
+app.run(function ($rootScope, menu, webLogin, webLogs, date) {
     //菜单注入
     $rootScope.menus = menu.getMenu();
+
+    $rootScope.webLogs = webLogs;
 
     var activeRoute = '';
     $rootScope.$on('$routeChangeSuccess', function (e, route) {
@@ -102,5 +133,27 @@ app.run(function ($rootScope, menu) {
     //页面是否激活
     $rootScope.isActive = function (route) {
         return activeRoute === route;
+    };
+
+    var loginState = {};
+    $rootScope.login = function (webInfo, done) {
+        if (loginState[webInfo._type]) {//正在登录
+            return;
+        }
+
+        // http://plserver/rptsearch/splitUrltoReadReport.action?detailFunId=FRL-RPT-02-004&oGlobalFunId=1918&repTypeCd=2&p_srcOrgCd=999999888&p_srcOrgLev=1&p_provCd=99&p_repserverconcd=5&p_rptCyc=0&p_dateDesc=2016year03month06day&p_beginDate=20160306&p_beginMonth=201603&p_endDate=20160306&p_endMonth=201603&p_dateCount=0&rpa_44=2&rpa_281=2&outputFormat=HTML
+
+        loginState[webInfo._type] = 1;
+
+        webLogs.push({message: `[${webInfo.name}] 开始登录`, time: date.nowTime()});
+
+        webLogin(webInfo).then(function () {
+            webLogs.push({message: `[${webInfo.name}] 登录成功`, time: date.nowTime()});
+            done && done();
+            delete loginState[webInfo._type];//登录成功
+        }, function (message) {
+            delete loginState[webInfo._type];//登录失败
+            webLogs.push({message: `[${webInfo.name}] 登录失败 (${message})`, time: date.nowTime()});
+        });
     };
 });

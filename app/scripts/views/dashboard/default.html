@@ -1,5 +1,7 @@
-<h3>
-    仪表盘
+<h3 layout="row" layout-align="center center">
+    <span>仪表盘</span>
+    <span flex></span>
+    <md-button style="margin: 0;" ng-click="startAll()">全部启动</md-button>
 </h3>
 
 <md-content>
@@ -20,21 +22,9 @@
                         </md-button>
                         <md-menu-content width="3" class="md-dense">
                             <md-menu-item>
-                                <md-button>
+                                <md-button ng-click="start(tile)">
                                     <md-icon>playlist_add</md-icon>
                                     启动
-                                </md-button>
-                            </md-menu-item>
-                            <md-menu-item>
-                                <md-button>
-                                    <md-icon>playlist_add</md-icon>
-                                    设置定时器
-                                </md-button>
-                            </md-menu-item>
-                            <md-menu-item>
-                                <md-button>
-                                    <md-icon>mode_edit</md-icon>
-                                    修改信息
                                 </md-button>
                             </md-menu-item>
                         </md-menu-content>
@@ -47,8 +37,9 @@
     <md-list>
         <md-subheader class="md-no-sticky">运行记录</md-subheader>
         <md-divider></md-divider>
-        <md-list-item ng-repeat="log in logs" ng-click="showLogDetails(log, $event)">
-            <p flex>{{ log.name }}</p>
+        <md-list-item ng-repeat="log in webLogs | limitTo:15 | reverse" ng-click="showLogDetails(log, $event)"
+                      style="font-size: 12px">
+            <p flex>{{ log.message }}</p>
             <span class="md-no-sticky md-caption">{{log.time}}</span>
         </md-list-item>
     </md-list>

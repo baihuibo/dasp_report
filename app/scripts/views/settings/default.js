@@ -20,7 +20,7 @@ app.config(function ($routeProvider, menuProvider) {
     });
 });
 
-app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList) {
+app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList, dialog, storage) {
     $scope.webList = webList.getList();
 
 
@@ -37,6 +37,16 @@ app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList) {
                 _.extendWith(src, web);
                 webList.saveAsFile();
             });
+    };
+
+    $scope.savePath = storage.getItem('savePath');
+
+    $scope.setSavePath = function ($ev) {
+        var path = dialog.showOpenDialog({properties: ['openDirectory']});
+        if (path) {
+            $scope.savePath = path[0];
+            storage.setItem('savePath', path[0]);
+        }
     };
 
     $scope.restore = function (ev) {

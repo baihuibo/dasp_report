@@ -1,7 +1,7 @@
 <md-list>
     <md-subheader class="md-no-sticky">
         <div layout="row" layout-align="center center">
-            <span>设置访问信息</span>
+            <span>访问信息设置</span>
             <span flex></span>
             <md-button style="margin: 0;" ng-click="restore($event)">还原配置</md-button>
         </div>
@@ -10,5 +10,16 @@
     <md-list-item ng-repeat="web in webList" ng-click="setInfo($event,web)">
         <p flex>{{ web.name }}</p>
         <md-button class="md-secondary" ng-click="setTimer($event,web)">设置定时器</md-button>
+    </md-list-item>
+
+    <br>
+
+    <md-subheader class="md-no-sticky">
+        通用信息设置
+    </md-subheader>
+    <md-divider></md-divider>
+    <md-list-item>
+        <p flex>文件存储路径: {{ savePath }}</p>
+        <md-button class="md-secondary" ng-click="setSavePath($event)">设置</md-button>
     </md-list-item>
 </md-list>

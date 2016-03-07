@@ -33,6 +33,11 @@ base.factory('toast', function ($mdToast) {
         );
     }
 });
+
+base.factory('storage', function () {
+    return window.localStorage;
+});
+
 base.factory('co', function () {
     return function (gen, ...args) {
         return new Promise(function (resolve, reject) {
@@ -134,6 +139,9 @@ base.factory('date', function () {
     return {
         time: function (format) {
             return moment().format(format || 'YYYY-MM-DD_HHmmss');
+        },
+        nowTime: function (format) {
+            return moment().format(format || 'YYYY-MM-DD HH:mm:ss');
         }
     }
 });
