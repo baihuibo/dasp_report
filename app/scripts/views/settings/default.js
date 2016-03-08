@@ -20,9 +20,8 @@ app.config(function ($routeProvider, menuProvider) {
     });
 });
 
-app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList, dialog, storage) {
+app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList, dialog, storage, $routeParams, $timeout) {
     $scope.webList = webList.getList();
-
 
     $scope.setInfo = function (ev, src) {
         $mdDialog.show({
@@ -41,7 +40,7 @@ app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList, dial
 
     $scope.savePath = storage.getItem('savePath');
 
-    $scope.setSavePath = function ($ev) {
+    $scope.setSavePath = function () {
         var path = dialog.showOpenDialog({properties: ['openDirectory']});
         if (path) {
             $scope.savePath = path[0];
@@ -77,6 +76,12 @@ app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList, dial
                 //save
             });
     };
+
+    if ($routeParams.savePath) {
+        $timeout(function () {
+            $scope.setSavePath();
+        }, 1000);
+    }
 });
 
 function SetInfoDialogController($scope, $mdDialog, dialogImpr, web) {
