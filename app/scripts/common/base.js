@@ -171,6 +171,12 @@ base.factory('csv', function () {
             return datas.map(function (item) {
                 return csv.body(item, cols);
             }).join('\n');
+        },
+
+        format: function (rows) {
+            return rows.map(function (row) {
+                return csv.title(row);
+            }).join('\n');
         }
     };
 

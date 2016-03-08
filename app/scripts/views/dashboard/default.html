@@ -1,6 +1,9 @@
 <h3 layout="row" layout-align="center center">
     <span>仪表盘</span>
     <span flex></span>
+    <span>
+        <md-datepicker ng-model="date" md-placeholder="请选择日期" md-max-date="maxDate"></md-datepicker>
+    </span>
     <md-button style="margin: 0;" ng-click="startAll()">全部启动</md-button>
 </h3>
 

@@ -4,32 +4,38 @@
 import app from 'app';
 
 //报表采集
-app.factory('webCapture', function ($q) {
+app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
     return function (webInfo, action) {
-        var q = $q.defer();
+        var q = $.Deferred();
 
-        var webview = document.createElement('webview');
-        webview.src = `${__dirname}/scripts/views/global/web-capture/${webInfo._type}/proxy.html`;
-        webview.classList.add('capture-box');
-        webview.width = 300;
-        webview.height = 100;
-        webview.preload = `${__dirname}/scripts/views/global/web-capture/${webInfo._type}/preload.js`;
+        var view = document.createElement('webview');
 
-        document.body.appendChild(webview);
+        var wrapper = document.createElement('div');
+        wrapper.classList.add('webview-box');
 
-        webview.addEventListener('dom-ready', function () {
-            webview.send('action', action);
+        view.src = `${__dirname}/scripts/views/global/web-capture/${webInfo._type}/proxy.html`;
+        view.preload = `${__dirname}/scripts/views/global/web-capture/${webInfo._type}/preload.js`;
+
+        document.body.appendChild(wrapper);
+        wrapper.appendChild(view);
+
+        view.addEventListener('dom-ready', function () {
+            view.send('action', action);
         });
 
-        webview.addEventListener('ipc-message', function (e) {
+        view.addEventListener('ipc-message', function (e) {
             if (e.channel === 'result') {
                 q.resolve(e.args[0]);
+                q.notify(webInfo, e.args[0]);
+            } else if (e.channel === 'debug') {
+                $log.debug('debug', e.args);
+                return;
             } else {
                 q.reject(e.args[0]);
             }
-            document.body.removeChild(webview);
+            document.body.removeChild(wrapper);
         });
 
-        return q.promise;
+        return q.promise();
     }
 });

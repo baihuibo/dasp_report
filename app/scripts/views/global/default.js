@@ -6,6 +6,7 @@ import webList from 'webList!json';
 import webListDefault from 'webListDefault!json';
 import './webLogin';
 import './capture';
+import './captureProxy';
 
 app.config(function ($routeProvider, $mdDateLocaleProvider) {
     //默认路由
@@ -21,6 +22,14 @@ app.config(function ($routeProvider, $mdDateLocaleProvider) {
     // Can change week display to start on Monday.
 
     $mdDateLocaleProvider.firstDayOfWeek = 1;
+
+    $mdDateLocaleProvider.parseDate = function (dateString) {
+        var m = moment(dateString, 'L', true);
+        return m.isValid() ? m.toDate() : new Date(NaN);
+    };
+    $mdDateLocaleProvider.formatDate = function (date) {
+        return moment(date).format('L');
+    };
 });
 
 //dialog方法通用实现
@@ -94,17 +103,17 @@ app.provider('menu', function () {
     }
 });
 
-app.factory('captures', function (webCapture, $q) {
-    return {
-        dljr: function () {
-            var q = $q.defer();
+app.factory('writeFile', function (fs, storage, csv) {
+    return function (promise, fileName, path) {
+        promise.done(function (result) {
+            // result = [row , row ...];
+            if (!fs.existsSync(path)) {
+                fs.mkdirSync(path);
+            }
+            fs.writeFileSync(path + '/' + fileName, csv.format(result));
+        });
 
-            q.notify();
-            q.reject();
-            q.resolve();
-
-            return q.promise;
-        }
+        return promise;
     }
 });
 
@@ -140,8 +149,6 @@ app.run(function ($rootScope, menu, webLogin, webLogs, date) {
         if (loginState[webInfo._type]) {//正在登录
             return;
         }
-
-        // http://plserver/rptsearch/splitUrltoReadReport.action?detailFunId=FRL-RPT-02-004&oGlobalFunId=1918&repTypeCd=2&p_srcOrgCd=999999888&p_srcOrgLev=1&p_provCd=99&p_repserverconcd=5&p_rptCyc=0&p_dateDesc=2016year03month06day&p_beginDate=20160306&p_beginMonth=201603&p_endDate=20160306&p_endMonth=201603&p_dateCount=0&rpa_44=2&rpa_281=2&outputFormat=HTML
 
         loginState[webInfo._type] = 1;
 

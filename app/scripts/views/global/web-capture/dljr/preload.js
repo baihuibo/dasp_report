@@ -2,10 +2,25 @@
  * Created by baihuibo on 16/3/7.
  */
 var ipcRenderer = require('electron').ipcRenderer;
+var util = require('../util.js');
 ipcRenderer.on('action', function (ev, action) {
-    var proxyWebpage = $('proxy-webpage');
-    proxyWebpage.onload = function () {
-        alert('onload');
+    var frame = $('iframe');
+    frame.onload = function () {
+        if (frame.contentDocument.title === 'Error') {
+            return setTimeout(function () {
+                ipcRenderer.sendToHost('debug', 'reload');
+                frame.contentWindow.location.reload();
+            }, 3000);
+        }
+        ipcRenderer.sendToHost('debug', 'loaded', frame.contentWindow.location.href);
+        if (frame.contentWindow.location.href.indexOf('cognos.cgi') > -1) {
+            waitFor.t = 0;
+            waitFor(frame.contentDocument, function done(doc) {
+                ipcRenderer.sendToHost('result', getResult(doc));
+            }, function fail(msg) {
+                ipcRenderer.sendToHost('err', msg);
+            });
+        }
     };
 
     var form = $('form');
@@ -13,6 +28,31 @@ ipcRenderer.on('action', function (ev, action) {
     form.submit();
 });
 
-function $(selector) {
-    return document.querySelector(selector);
+function getResult(doc) {
+    var table = $('#rt_NS_ > tbody > tr:nth-child(2) table:nth-child(1)', doc);
+    if (table) {
+        return util.dljrResult(table);
+    }
+    return [];
+}
+
+function $(selector, context) {
+    return (context || document).querySelector(selector);
+}
+
+function waitFor(doc, done, fail) {
+    if ($('#rt_NS_', doc) && $('#RVContent_NS_', doc)) {
+        return done(doc);
+    }
+
+    ipcRenderer.sendToHost('debug', 'waitFor', waitFor.t);
+
+    waitFor.t++;
+
+    setTimeout(function () {
+        if (waitFor.t === 360) {
+            return fail('查询超时等待超过三十分钟未出结果');
+        }
+        waitFor(doc, done, fail);
+    }, 5000);
 }

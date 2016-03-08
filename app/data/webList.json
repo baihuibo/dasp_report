@@ -10,7 +10,7 @@
     "timer": {
       "type": "1"
     },
-    "color": "#e8f5e9"
+    "color": "#ad1457"
   },
   {
     "_type": "kfjj",
@@ -24,7 +24,7 @@
     "timer": {
       "type": "1"
     },
-    "color": "#0288d1"
+    "color": "#ffecb3"
   },
   {
     "_type": "dlbx",
@@ -38,6 +38,6 @@
     "timer": {
       "type": "1"
     },
-    "color": "#00bcd4"
+    "color": "#ff9800"
   }
 ]

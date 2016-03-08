@@ -11,7 +11,7 @@ app.factory('webLogin', function ($q) {
         var webview = document.createElement('webview');
 
         var wrapper = document.createElement('div');
-        wrapper.classList.add('login-box');
+        wrapper.classList.add('webview-box');
 
         webview.src = webInfo.url;
         webview.preload = `${__dirname}/scripts/views/global/webLogin-preload/${webInfo._type}.js`;
