@@ -45,6 +45,11 @@ function waitFor(doc, done, fail) {
         return done(doc);
     }
 
+    var formText = $('.formText[valign=top]', doc);
+    if (formText) {
+        return fail(formText.innerText);
+    }
+
     ipcRenderer.sendToHost('debug', 'waitFor', waitFor.t);
 
     waitFor.t++;

@@ -27,13 +27,13 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
             if (e.channel === 'result') {
                 q.resolve(e.args[0]);
                 q.notify(webInfo, e.args[0]);
+                document.body.removeChild(wrapper);
             } else if (e.channel === 'debug') {
                 $log.debug('debug', e.args);
-                return;
             } else {
-                q.reject(e.args[0]);
+                $log.debug('err msg : ', e.args);
+                view.reload();
             }
-            document.body.removeChild(wrapper);
         });
 
         return q.promise();
