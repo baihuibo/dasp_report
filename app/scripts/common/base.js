@@ -21,6 +21,7 @@ base.config(function (remoteProvider) {
     });
 
     remoteProvider.register('nodemailer');
+    remoteProvider.register('gbk');
 });
 base.factory('toast', function ($mdToast) {
     return function (message, delay, position) {

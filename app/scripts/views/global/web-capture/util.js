@@ -2,29 +2,53 @@
  * Created by baihuibo on 16/3/8.
  */
 
-exports.dljrResult = function (table) {
+exports.dljrResult = function (table, type) {
     var trs = table.querySelectorAll('tr');
+    var result = [], slice = [].slice;
 
-    var head1 = trs[4],
-        head2 = trs[5],
-        bodys = [].slice.call(trs, 6);
+    var hds, bodys;
+    if (type) {
+        hds = slice.call(trs, 4, 9);
+        bodys = slice.call(trs, 9);
+    } else {
+        hds = slice.call(trs, 4, 6);
+        bodys = slice.call(trs, 6);
+    }
 
-    var h1_tds = $$('td', head1),
-        h2_tds = $$('td', head2);
+    hds = map(hds, function (hr) {
+        return getTitle($$('td', hr), [])
+    });
 
-    var result = [];
-    var h1 = getTitle(h1_tds, []);
-    var h2 = getTitle(h2_tds, []);
-
-    titleNormal(h1, h2);
-
-    result.push(h1, h2);
-
-    result = result.concat(getRows(bodys));
-
-    return result;
+    return result.concat(normals(hds), getRows(bodys));
 };
 
+function normals(hds) {
+    hds.forEach(function (row, idx) {
+        row.forEach(function (col, i) {
+            if (!col) {
+                row[i] = getValue(i, idx + 1, hds);
+            } else if (!row[i + 1]) {
+                row[i + 1] = col;
+            }
+        });
+    });
+
+    return hds;
+}
+
+function getValue(i, idx, rows) {
+    for (var j = idx; j < rows.length; j++) {
+        if (rows[j][i]) {
+            return rows[j][i];
+        }
+    }
+
+    for (j = rows.length; j > 0; j--) {
+        if (rows[j][i]) {
+            return rows[j][i];
+        }
+    }
+}
 
 function getRows(bodys) {
     var rows = [];
@@ -37,25 +61,7 @@ function getRows(bodys) {
 }
 
 function getRow(tds) {
-    var arr = [];
-    each(tds, function (item) {
-        arr.push(getText(item));
-    });
-    return arr;
-}
-
-function titleNormal(h1, h2) {
-    h1.forEach(function (item, index) {
-        if (!item) {
-            h1[index] = h1[index - 1];
-        }
-    });
-
-    h2.forEach(function (item, index) {
-        if (!item) {
-            h2[index] = h1[index];
-        }
-    });
+    return map(tds, getText);
 }
 
 function getTitle(tds, arr) {
@@ -69,7 +75,6 @@ function getTitle(tds, arr) {
             arr.push(getText(td));
         }
     });
-    console.log('h', arr);
     return arr;
 }
 
@@ -79,9 +84,18 @@ function getText(el) {
 
 function each(list, callback) {
     for (var i = 0; i < list.length; i++) {
-        var obj = list[i];
-        callback(obj, i, list);
+        callback(list[i], i, list);
     }
+}
+
+function map(list, callback) {
+    var result = [];
+
+    each(list, function (item, i) {
+        result[i] = callback(item, i, list);
+    });
+
+    return result;
 }
 
 function $(selector, context) {

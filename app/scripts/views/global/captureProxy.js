@@ -5,14 +5,15 @@ import app from 'app';
 
 app.factory('captures', function (webCaptureProxy, $q, webLogs, date, writeFile, fs) {
 
-    function dljrAction(date, type, subtract) {
+    function dljrAction(date, type, funId, subtract) {
         var action = 'http://plserver/rptsearch/splitUrltoReadReport.action';
         var m = moment(date);
         if (subtract) {
             m.subtract(1, 'year');
         }
         var params = ['detailFunId=FRL-RPT-02-004',
-            'oGlobalFunId=1918&repTypeCd=2',
+            `oGlobalFunId=${funId}`,
+            'repTypeCd=2',
             'p_srcOrgCd=999999888',
             'p_srcOrgLev=1',
             'p_provCd=99',
@@ -31,9 +32,9 @@ app.factory('captures', function (webCaptureProxy, $q, webLogs, date, writeFile,
         return action + '?' + params.join('&');
     }
 
-    function proxy(webInfo, action, path, fileName, promises) {
+    function proxy(webInfo, action, path, fileName, promises, type) {
         if (!fs.existsSync(path + '/' + fileName)) {
-            var promise = webCaptureProxy(webInfo, action);
+            var promise = webCaptureProxy(webInfo, action, type);
             writeFile(promise, fileName, path);
             promises.push(promise);
         }
@@ -46,15 +47,15 @@ app.factory('captures', function (webCaptureProxy, $q, webLogs, date, writeFile,
             var ps = [];
 
             //邮政储蓄银行网点
-            proxy(webInfo, dljrAction(d, 1), path, `CUST_BANK_DAY_${name}.csv`, ps);
+            proxy(webInfo, dljrAction(d, 1, 1918), path, `CUST_BANK_DAY_${name}.csv`, ps);
             //邮政储蓄代理网点
-            proxy(webInfo, dljrAction(d, 2), path, `CUST_PROXY_DAY_${name}.csv`, ps);
+            proxy(webInfo, dljrAction(d, 2, 1918), path, `CUST_PROXY_DAY_${name}.csv`, ps);
 
             //去年
             //邮政储蓄银行网点
-            proxy(webInfo, dljrAction(d, 1, true), path, `CUST_BANK_DAY_SAME_${name}.csv`, ps);
+            proxy(webInfo, dljrAction(d, 1, 1918, true), path, `CUST_BANK_DAY_SAME_${name}.csv`, ps);
             //邮政储蓄代理网点
-            proxy(webInfo, dljrAction(d, 2, true), path, `CUST_PROXY_DAY_SAME_${name}.csv`, ps);
+            proxy(webInfo, dljrAction(d, 2, 1918, true), path, `CUST_PROXY_DAY_SAME_${name}.csv`, ps);
 
             return $q.all(ps).then(function () {
                 var ps2 = [];

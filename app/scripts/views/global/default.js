@@ -103,14 +103,14 @@ app.provider('menu', function () {
     }
 });
 
-app.factory('writeFile', function (fs, storage, csv) {
+app.factory('writeFile', function (fs, storage, csv, gbk) {
     return function (promise, fileName, path) {
         promise.done(function (result) {
             // result = [row , row ...];
             if (!fs.existsSync(path)) {
                 fs.mkdirSync(path);
             }
-            fs.writeFileSync(path + '/' + fileName, csv.format(result));
+            fs.writeFileSync(path + '/' + fileName, gbk.toBuffer('utf-8', csv.format(result)));
         });
 
         return promise;

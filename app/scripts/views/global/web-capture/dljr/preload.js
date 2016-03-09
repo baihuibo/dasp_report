@@ -3,7 +3,7 @@
  */
 var ipcRenderer = require('electron').ipcRenderer;
 var util = require('../util.js');
-ipcRenderer.on('action', function (ev, action) {
+ipcRenderer.on('action', function (ev, action, type) {
     var frame = $('iframe');
     frame.onload = function () {
         if (frame.contentDocument.title === 'Error') {
@@ -16,7 +16,7 @@ ipcRenderer.on('action', function (ev, action) {
         if (frame.contentWindow.location.href.indexOf('cognos.cgi') > -1) {
             waitFor.t = 0;
             waitFor(frame.contentDocument, function done(doc) {
-                ipcRenderer.sendToHost('result', getResult(doc));
+                ipcRenderer.sendToHost('result', getResult(doc, type));
             }, function fail(msg) {
                 ipcRenderer.sendToHost('err', msg);
             });
@@ -28,10 +28,10 @@ ipcRenderer.on('action', function (ev, action) {
     form.submit();
 });
 
-function getResult(doc) {
+function getResult(doc, type) {
     var table = $('#rt_NS_ > tbody > tr:nth-child(2) table:nth-child(1)', doc);
     if (table) {
-        return util.dljrResult(table);
+        return util.dljrResult(table, type);
     }
     return [];
 }
