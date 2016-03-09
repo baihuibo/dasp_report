@@ -30,8 +30,11 @@ ipcRenderer.on('action', function (ev, action, type) {
 
 function getResult(doc, type) {
     var table = $('#rt_NS_ > tbody > tr:nth-child(2) table:nth-child(1)', doc);
+    ipcRenderer.sendToHost('debug', 'table', table);
     if (table) {
-        return util.dljrResult(table, type);
+        var result = util.dljrResult(table, type);
+        ipcRenderer.sendToHost('debug', 'result', result);
+        return result;
     }
     return [];
 }

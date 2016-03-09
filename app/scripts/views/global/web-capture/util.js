@@ -1,10 +1,11 @@
 /**
  * Created by baihuibo on 16/3/8.
  */
-
+var ipcRenderer = require('electron').ipcRenderer;
 exports.dljrResult = function (table, type) {
-    var trs = table.querySelectorAll('tr');
-    var result = [], slice = [].slice;
+    ipcRenderer.sendToHost('debug', 'dljrResult', table, type);
+    var trs = table.querySelectorAll('tr:not([class])');
+    var slice = [].slice;
 
     var hds, bodys;
     if (type) {
@@ -19,16 +20,18 @@ exports.dljrResult = function (table, type) {
         return getTitle($$('td', hr), [])
     });
 
-    return result.concat(normals(hds), getRows(bodys));
+    return [].concat(normals(hds), getRows(bodys));
 };
 
 function normals(hds) {
-    hds.forEach(function (row, idx) {
-        row.forEach(function (col, i) {
+
+    each(hds, function (row, idx) {
+        //ipcRenderer.sendToHost('debug' , 'row', row);
+        each(row, function (col, i) {
             if (!col) {
-                row[i] = getValue(i, idx + 1, hds);
-            } else if (!row[i + 1]) {
-                row[i + 1] = col;
+                hds[idx][i] = getValue(i, idx + 1, hds); //竖着找
+            } else if (i != row.length - 1 && !row[i + 1]) {
+                hds[idx][i + 1] = col;   //横着找
             }
         });
     });
@@ -37,13 +40,15 @@ function normals(hds) {
 }
 
 function getValue(i, idx, rows) {
+
     for (var j = idx; j < rows.length; j++) {
         if (rows[j][i]) {
             return rows[j][i];
         }
     }
 
-    for (j = rows.length; j > 0; j--) {
+    for (var j = rows.length - 1; j > 0; j--) {
+
         if (rows[j][i]) {
             return rows[j][i];
         }
@@ -79,7 +84,7 @@ function getTitle(tds, arr) {
 }
 
 function getText(el) {
-    return el ? el.innerText.trim() || null : '';
+    return el ? (el.innerText || el.textContent || '').trim() || '' : '';
 }
 
 function each(list, callback) {

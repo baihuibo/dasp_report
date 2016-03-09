@@ -49,19 +49,21 @@ app.factory('captures', function (webCaptureProxy, $q, webLogs, date, writeFile,
             //邮政储蓄银行网点
             proxy(webInfo, dljrAction(d, 1, 1918), path, `CUST_BANK_DAY_${name}.csv`, ps);
             //邮政储蓄代理网点
-            proxy(webInfo, dljrAction(d, 2, 1918), path, `CUST_PROXY_DAY_${name}.csv`, ps);
+            //proxy(webInfo, dljrAction(d, 2, 1918), path, `CUST_PROXY_DAY_${name}.csv`, ps);
 
             //去年
             //邮政储蓄银行网点
-            proxy(webInfo, dljrAction(d, 1, 1918, true), path, `CUST_BANK_DAY_SAME_${name}.csv`, ps);
+            //proxy(webInfo, dljrAction(d, 1, 1918, true), path, `CUST_BANK_DAY_SAME_${name}.csv`, ps);
             //邮政储蓄代理网点
-            proxy(webInfo, dljrAction(d, 2, 1918, true), path, `CUST_PROXY_DAY_SAME_${name}.csv`, ps);
+            //proxy(webInfo, dljrAction(d, 2, 1918, true), path, `CUST_PROXY_DAY_SAME_${name}.csv`, ps);
 
             return $q.all(ps).then(function () {
                 var ps2 = [];
-                //proxy(webInfo, dljrAction(d, 1), path, `CUST_BANK_DAY_${name}.csv`, promise2);
-                //proxy(webInfo, dljrAction(d, 2), path, `CUST_PROXY_DAY_${name}.csv`, promise2);
-
+                //proxy(webInfo, dljrAction(d, 1,1915), path, `CUST_DIV_DAY_BANK_${name}.csv`, ps2,1);
+                //proxy(webInfo, dljrAction(d, 2,1915), path, `CUST_DIV_DAY_TOTAL_${name}.csv`, ps2,1);
+                //
+                //proxy(webInfo, dljrAction(d, 1,1915, true), path, `CUST_DIV_DAY_BANK_SAME_${name}.csv`, ps2,1);
+                //proxy(webInfo, dljrAction(d, 2,1915, true), path, `CUST_DIV_DAY_TOTAL_SAME_${name}.csv`, ps2,1);
                 return $q.all(ps2);
             });
         }
