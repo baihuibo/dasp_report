@@ -5,7 +5,7 @@ import app from 'app';
 
 //报表采集
 app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
-    return function (webInfo, action, type) {
+    return function (web, ...args) {//action, date, type
         var q = $.Deferred();
 
         var view = document.createElement('webview');
@@ -13,20 +13,19 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
         var wrapper = document.createElement('div');
         wrapper.classList.add('webview-box');
 
-        view.src = `${__dirname}/scripts/views/global/web-capture/${webInfo._type}/proxy.html`;
-        view.preload = `${__dirname}/scripts/views/global/web-capture/${webInfo._type}/preload.js`;
+        view.src = `${__dirname}/scripts/views/global/web-capture/${web._type}/proxy.html`;
+        view.preload = `${__dirname}/scripts/views/global/web-capture/${web._type}/preload.js`;
 
         document.body.appendChild(wrapper);
         wrapper.appendChild(view);
 
         view.addEventListener('dom-ready', function () {
-            view.send('action', action, type);
+            view.send('action', ...args);
         });
 
         view.addEventListener('ipc-message', function (e) {
             if (e.channel === 'result') {
                 q.resolve(e.args[0]);
-                q.notify(webInfo, e.args[0]);
                 document.body.removeChild(wrapper);
             } else if (e.channel === 'debug') {
                 $log.debug('debug', e.args);

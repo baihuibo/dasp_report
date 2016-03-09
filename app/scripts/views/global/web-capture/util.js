@@ -2,9 +2,7 @@
  * Created by baihuibo on 16/3/8.
  */
 var ipcRenderer = require('electron').ipcRenderer;
-exports.dljrResult = function (table, type) {
-    ipcRenderer.sendToHost('debug', 'dljrResult', table, type);
-    var trs = table.querySelectorAll('tr:not([class])');
+exports.dljrResult = function (trs, date, type) {
     var slice = [].slice;
 
     var hds, bodys;
@@ -17,21 +15,18 @@ exports.dljrResult = function (table, type) {
     }
 
     hds = map(hds, function (hr) {
-        return getTitle($$('td', hr), [])
+        return getTitle(hr.childNodes, ['date'])
     });
 
-    return [].concat(normals(hds), getRows(bodys));
+    return [].concat(normals(hds), getRows(bodys, date || ''));
 };
 
 function normals(hds) {
 
     each(hds, function (row, idx) {
-        //ipcRenderer.sendToHost('debug' , 'row', row);
         each(row, function (col, i) {
             if (!col) {
-                hds[idx][i] = getValue(i, idx + 1, hds); //竖着找
-            } else if (i != row.length - 1 && !row[i + 1]) {
-                hds[idx][i + 1] = col;   //横着找
+                row[i] = getValue(i, idx, hds); //竖着找
             }
         });
     });
@@ -40,26 +35,25 @@ function normals(hds) {
 }
 
 function getValue(i, idx, rows) {
-
-    for (var j = idx; j < rows.length; j++) {
+    var j;
+    for (j = idx; j < rows.length; j++) {
         if (rows[j][i]) {
             return rows[j][i];
         }
     }
 
-    for (var j = rows.length - 1; j > 0; j--) {
-
+    for (j = rows.length - 1; j >= 0; j--) {
         if (rows[j][i]) {
             return rows[j][i];
         }
     }
 }
 
-function getRows(bodys) {
+function getRows(bodys, date) {
     var rows = [];
 
     each(bodys, function (tr) {
-        rows.push(getRow($$('td', tr)));
+        rows.push([date].concat(getRow($$('td', tr))));
     });
 
     return rows;
@@ -69,15 +63,16 @@ function getRow(tds) {
     return map(tds, getText);
 }
 
-function getTitle(tds, arr) {
-    each(tds, function (td, i) {
-        if (td.colSpan > 1) {
-            arr.push(getText(td));
-            for (var j = 1; j < td.colSpan; j++) {
-                arr.push('');
+function getTitle(rowCols, arr) {
+    each(rowCols, function (cell) {
+        if (cell.colSpan > 1) {
+            var text = getText(cell);
+            arr.push(text);
+            for (var j = 1; j < cell.colSpan; j++) {
+                arr.push(text);
             }
         } else {
-            arr.push(getText(td));
+            arr.push(getText(cell));
         }
     });
     return arr;

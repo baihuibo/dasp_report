@@ -3,7 +3,7 @@
  */
 var ipcRenderer = require('electron').ipcRenderer;
 var util = require('../util.js');
-ipcRenderer.on('action', function (ev, action, type) {
+ipcRenderer.on('action', function (ev, action, date, type) {
     var frame = $('iframe');
     frame.onload = function () {
         if (frame.contentDocument.title === 'Error') {
@@ -16,7 +16,7 @@ ipcRenderer.on('action', function (ev, action, type) {
         if (frame.contentWindow.location.href.indexOf('cognos.cgi') > -1) {
             waitFor.t = 0;
             waitFor(frame.contentDocument, function done(doc) {
-                ipcRenderer.sendToHost('result', getResult(doc, type));
+                ipcRenderer.sendToHost('result', getResult(doc, date, type));
             }, function fail(msg) {
                 ipcRenderer.sendToHost('err', msg);
             });
@@ -28,11 +28,10 @@ ipcRenderer.on('action', function (ev, action, type) {
     form.submit();
 });
 
-function getResult(doc, type) {
-    var table = $('#rt_NS_ > tbody > tr:nth-child(2) table:nth-child(1)', doc);
-    ipcRenderer.sendToHost('debug', 'table', table);
-    if (table) {
-        var result = util.dljrResult(table, type);
+function getResult(doc, date, type) {
+    var tbody = $('.pb > table > tbody', doc);
+    if (tbody) {
+        var result = util.dljrResult(tbody.childNodes, date, type);
         ipcRenderer.sendToHost('debug', 'result', result);
         return result;
     }
@@ -41,6 +40,10 @@ function getResult(doc, type) {
 
 function $(selector, context) {
     return (context || document).querySelector(selector);
+}
+
+function $$(selector, context) {
+    return (context || document).querySelectorAll(selector);
 }
 
 function waitFor(doc, done, fail) {
@@ -58,6 +61,11 @@ function waitFor(doc, done, fail) {
     waitFor.t++;
 
     setTimeout(function () {
+        if (doc.body.innerText.indexOf('会话已过期') > -1) {
+            ipcRenderer.sendToHost('debug', 'reload', '会话已过期');
+            location.reload();
+            return;
+        }
         if (waitFor.t === 360) {
             return fail('查询超时等待超过三十分钟未出结果');
         }
