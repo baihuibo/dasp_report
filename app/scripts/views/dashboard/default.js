@@ -37,12 +37,12 @@ app.controller('DashboardCtrl', function ($scope, webList, captures, webLogs, da
     });
 
     $scope.start = function (webItem) {
-        var name = moment($scope.date).format('YYYYMMDD');
-        var path = storage.savePath + '/' + name;
+        var time = moment($scope.date).format('YYYYMMDD');
+        var path = storage.savePath + '/' + time;
 
         $scope.login(webItem, function () {//登录成功
             //采集表表
-            var q = captures[webItem._type](webItem, $scope.date, name, path);
+            var q = captures[webItem._type](webItem, $scope.date, time, path);
 
             q.then(function done() {
                 webLogs.push({
