@@ -36,22 +36,22 @@ app.controller('DashboardCtrl', function ($scope, webList, captures, webLogs, da
         tile.color = randomColor();
     });
 
-    $scope.start = function (webItem) {
+    $scope.start = function (web) {
         var time = moment($scope.date).format('YYYYMMDD');
         var path = storage.savePath + '/' + time;
 
-        $scope.login(webItem, function () {//登录成功
+        $scope.login(web, function () {//登录成功
             //采集表表
-            var q = captures[webItem._type](webItem, $scope.date, time, path);
+            var q = captures[web._type]({path, time, web, date: $scope.date});
 
             q.then(function done() {
                 webLogs.push({
-                    message: `[${webItem.name}] 抓取成功`,
+                    message: `[${web.name}] 抓取成功`,
                     time: date.nowTime()
                 });
             }, function fail(msg) {
                 webLogs.push({
-                    message: `[${webItem.name}] 抓取失败 (${msg || ''})`,
+                    message: `[${web.name}] 抓取失败 (${msg || ''})`,
                     time: date.nowTime()
                 });
             });

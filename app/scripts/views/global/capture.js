@@ -5,7 +5,7 @@ import app from 'app';
 
 //报表采集
 app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
-    return function (web, ...args) {//action, date, type
+    return function (obj) {
         var q = $.Deferred();
 
         var view = document.createElement('webview');
@@ -13,14 +13,14 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
         var wrapper = document.createElement('div');
         wrapper.classList.add('webview-box');
 
-        view.src = `${__dirname}/scripts/views/global/web-capture/${web._type}/proxy.html`;
-        view.preload = `${__dirname}/scripts/views/global/web-capture/${web._type}/preload.js`;
+        view.src = `${__dirname}/scripts/views/global/web-capture/${obj.web._type}/proxy.html`;
+        view.preload = `${__dirname}/scripts/views/global/web-capture/${obj.web._type}/preload.js`;
 
         document.body.appendChild(wrapper);
         wrapper.appendChild(view);
 
         view.addEventListener('dom-ready', function () {
-            view.send('action', ...args);
+            view.send('action', obj);
         });
 
         view.addEventListener('ipc-message', function (e) {

@@ -2,23 +2,17 @@
  * Created by baihuibo on 16/3/8.
  */
 var ipcRenderer = require('electron').ipcRenderer;
-exports.dljrResult = function (trs, date, type) {
+exports.dljrResult = function (trs, obj) {
     var slice = [].slice;
 
-    var hds, bodys;
-    if (type) {
-        hds = slice.call(trs, 4, 9);
-        bodys = slice.call(trs, 9);
-    } else {
-        hds = slice.call(trs, 4, 6);
-        bodys = slice.call(trs, 6);
-    }
+    var hds = slice.call(trs, obj.hds[0], obj.hds[1]);
+    var bodys = slice.call(trs, obj.hds[1]);
 
     hds = map(hds, function (hr) {
         return getTitle(hr.childNodes, ['date'])
     });
 
-    return [].concat(normals(hds), getRows(bodys, date || ''));
+    return [].concat(normals(hds), getRows(bodys, obj.time || ''));
 };
 
 function normals(hds) {
