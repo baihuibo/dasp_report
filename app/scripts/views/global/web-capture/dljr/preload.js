@@ -31,7 +31,7 @@ ipcRenderer.on('action', function (ev, obj) {
 function getResult(doc, obj) {
     var tbody = $('.pb > table > tbody', doc);
     if (tbody) {
-        var result = util(tbody.childNodes, obj);
+        var result = util(tbody.children, obj);
         ipcRenderer.sendToHost('debug', 'result', result);
         return result;
     }

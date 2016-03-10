@@ -8,7 +8,7 @@ module.exports = function (trs, obj) {
     var bodys = slice.call(trs, obj.hds[1]);
 
     hds = map(hds, function (hr) {
-        return getTitle(hr.childNodes, ['date'])
+        return getTitle(hr.children, ['date'])
     });
 
     return [].concat(normals(hds), getRows(bodys, obj.time || ''));
@@ -46,7 +46,7 @@ function getRows(bodys, date) {
     var rows = [];
 
     each(bodys, function (tr) {
-        rows.push([date].concat(getRow($$('td', tr))));
+        rows.push([date].concat(getRow(tr.children)));
     });
 
     return rows;
