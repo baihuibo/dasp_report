@@ -45,5 +45,24 @@ export default {
         lc_day_total: 'FUND_LC_DAY_TOTAL',
         lc_hds: [0, 2]
     },
+    dlbx: {
+        insu_day: 'INSU_DAY',//代理-本日
+        insu_day_same: 'INSU_DAY_SAME',//代理-本日同期
+        insu_month: 'INSU_MONTH',//代理-本月
+        insu_month_same: 'INSU_MONTH_SAME',//代理-本月同期
+
+        insu_per_mon: 'INSU_PER_MON',//期缴-本月
+        insu_per_mon_same: 'INSU_PER_MON_SAME',//期缴-本月同期
+        insu_per_total_mon: 'INSU_PER_TOTAL_MON',//期缴-邮银本月
+        insu_per_total_mon_same: 'INSU_PER_TOTAL_MON_SAME',//期缴-邮银本月同期
+
+        insu_total_mon: 'INSU_TOTAL_MON',//邮银-本月
+        insu_total_mon_same: 'INSU_TOTAL_MON_SAME',//邮银-本月同期
+
+        insu_dev_base_data: 'INSU_DEV_BASE_DATA',//中邮保险业务发展情况基础数据
+        hds_dl: [0, 4], //代理表头
+        hds_qj: [0, 3], //期缴表头
+        hds_yy: [0, 4] //邮银表头
+    },
     logDebugEnabled: true
 };

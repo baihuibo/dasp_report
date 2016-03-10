@@ -11,123 +11,181 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy) {
 
         var ps1 = [];
 
-        //中国邮政储蓄存款余额增长情况统计表-日报
-        //邮政储蓄银行网点
-        actionProxy(path, `${config.dljr.bank}_${time}.csv`, ps1, {
+        //代理-本日
+        actionProxy(path, `${config.dlbx.insu_day}_${time}.csv`, ps1, {
             web,
-            action: dljr(config.dljr.rpa1),
+            action: dl_fn(),
             time,
-            hds: config.dljr.hds1
-        });
-        //邮政储蓄代理网点
-        actionProxy(path, `${config.dljr.proxy}_${time}.csv`, ps1, {
-            web,
-            action: dljr(config.dljr.rpa2),
-            time,
-            hds: config.dljr.hds1
+            hds: config.dlbx.hds_dl
         });
 
-        //去年
-        //邮政储蓄银行网点
-        actionProxy(path, `${config.dljr.bank_same}_${time}.csv`, ps1, {
+        //代理-本日同期
+        actionProxy(path, `${config.dlbx.insu_day_same}_${time}.csv`, ps1, {
             web,
-            action: dljr(config.dljr.rpa1, 1),
+            action: dl_fn('year'),
             time,
-            hds: config.dljr.hds1
+            hds: config.dlbx.hds_dl
         });
-        //邮政储蓄代理网点
-        actionProxy(path, `${config.dljr.proxy_same}_${time}.csv`, ps1, {
+
+        //代理-本月
+        actionProxy(path, `${config.dlbx.insu_month}_${time}.csv`, ps1, {
             web,
-            action: dljr(config.dljr.rpa2, 1),
+            action: dl_fn(null, 1),
             time,
-            hds: config.dljr.hds1
+            hds: config.dlbx.hds_dl
+        });
+
+        //代理-本月同期
+        actionProxy(path, `${config.dlbx.insu_month_same}_${time}.csv`, ps1, {
+            web,
+            action: dl_fn('year', 1),
+            time,
+            hds: config.dlbx.hds_dl
         });
 
         return $q.all(ps1).then(function () {
-            //中国邮政储蓄存款余额分种类统计表-日报
             var ps2 = [];
-            actionProxy(path, `${config.dljr.div_bank}_${time}.csv`, ps2, {
+            //期缴-本月
+            actionProxy(path, `${config.dlbx.insu_per_mon}_${time}.csv`, ps2, {
                 web,
-                action: dljr2(config.dljr.rpa1),
+                action: qj_fn(null, 1, 2),
                 time,
-                hds: config.dljr.hds2
-            });
-            actionProxy(path, `${config.dljr.div_total}_${time}.csv`, ps2, {
-                web,
-                action: dljr2(config.dljr.rpa2),
-                time,
-                hds: config.dljr.hds2
+                hds: config.dlbx.hds_qj
             });
 
-            //去年
-            actionProxy(path, `${config.dljr.div_bank_same}_${time}.csv`, ps2, {
+            //期缴-本月同期
+            actionProxy(path, `${config.dlbx.insu_per_mon_same}_${time}.csv`, ps2, {
                 web,
-                action: dljr2(config.dljr.rpa1, 1),
+                action: qj_fn('year', 1, 2),
                 time,
-                hds: config.dljr.hds2
+                hds: config.dlbx.hds_qj
             });
-            actionProxy(path, `${config.dljr.div_total_same}_${time}.csv`, ps2, {
+
+            //期缴-邮银本月
+            actionProxy(path, `${config.dlbx.insu_per_total_mon}_${time}.csv`, ps2, {
                 web,
-                action: dljr2(config.dljr.rpa2, 1),
+                action: qj_fn(null, 1, 9),
                 time,
-                hds: config.dljr.hds2
+                hds: config.dlbx.hds_qj
             });
-            return $q.all(ps2);
+
+            //期缴-邮银本月同期
+            actionProxy(path, `${config.dlbx.insu_per_total_mon_same}_${time}.csv`, ps2, {
+                web,
+                action: qj_fn('year', 1, 9),
+                time,
+                hds: config.dlbx.hds_qj
+            });
+
+
+            return $q.all(ps2).then(function () {
+                var ps3 = [];
+
+                //邮银-本月
+                actionProxy(path, `${config.dlbx.insu_total_mon}_${time}.csv`, ps3, {
+                    web,
+                    action: yy_fn(null, 1),
+                    time,
+                    hds: config.dlbx.hds_yy
+                });
+
+                //邮银-本月同期
+                actionProxy(path, `${config.dlbx.insu_total_mon_same}_${time}.csv`, ps3, {
+                    web,
+                    action: yy_fn('year', 1),
+                    time,
+                    hds: config.dlbx.hds_yy
+                });
+
+                return $q.all(ps3);
+
+            });
         });
 
-        function dljr(rpa, subtract) {
-            var action = 'http://plserver/rptsearch/splitUrltoReadReport.action';
-            var m = moment(d);
+        function dl_fn(subtract, day) {
+            var start = moment(d);
+            var end = moment(d);
+            var nowtime = moment();
             if (subtract) {
-                m.subtract(1, 'year');
+                start.subtract(1, subtract);
+                end.subtract(1, subtract);
             }
-            var params = [
-                'detailFunId=FRL-RPT-02-004',
-                `oGlobalFunId=1918`,
-                'repTypeCd=2',
-                'p_srcOrgCd=999999888',
-                'p_srcOrgLev=1',
-                'p_provCd=99',
-                'p_repserverconcd=5',
-                'p_rptCyc=0',
-                `p_dateDesc=${m.format('YYYY')}year${m.format('MM')}month${m.format('DD')}day`,
-                `p_beginDate=${m.format('YYYYMMDD')}`,
-                `p_beginMonth=${m.format('YYYYMM')}`,
-                `p_endDate=${m.format('YYYYMMDD')}`,
-                `p_endMonth=${m.format('YYYYMM')}`,
-                'p_dateCount=0',
-                `rpa_44=${rpa}`,
-                'rpa_281=2',
-                'outputFormat=HTML'
-            ];
-            return action + '?' + params.join('&');
+
+            if (_.isNumber(day)) {
+                start.day(day);
+            }
+
+            var params = {
+                g_i_start_date: start.format('YYYYMMDD'),
+                g_i_stop_date: end.format('YYYYMMDD'),
+                s_inst_id: '11005293', //orgId
+                sys_dt: nowtime.format('YYYYMMDD'),
+                'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
+                g_i_unit_property: 2
+            };
+
+            return {
+                url: 'http://10.2.3.237:7001/ncpai/report_581711_0.do',
+                params: params
+            };
+
         }
 
-        function dljr2(rpa, subtract) {
-            var action = 'http://plserver/rptsearch/splitUrltoReadReport.action';
-            var m = moment(d);
+        function qj_fn(subtract, day, unit) {
+            var start = moment(d);
+            var end = moment(d);
+            var nowtime = moment();
             if (subtract) {
-                m.subtract(1, 'year');
+                start.subtract(1, subtract);
+                end.subtract(1, subtract);
             }
-            var params = [
-                `detailFunId=FRL-RPT-02-003`,
-                `oGlobalFunId=1915`,
-                `repTypeCd=2`,
-                `p_srcOrgCd=999999888`,
-                `p_srcOrgLev=1`,
-                `p_provCd=99`,
-                `p_repserverconcd=5`,
-                `p_rptCyc=0`,
-                `p_dateDesc=${m.format('YYYY')}year${m.format('MM')}month${m.format('DD')}day`,
-                `p_beginDate=${m.format('YYYYMMDD')}`,
-                `p_beginMonth=${m.format('YYYYMM')}`,
-                `p_endDate=${m.format('YYYYMMDD')}`,
-                `p_endMonth=${m.format('YYYYMM')}`,
-                `p_dateCount=0`,
-                `rpa_44=${rpa}`,
-                'outputFormat=HTML'
-            ];
-            return action + '?' + params.join('&');
+
+            if (_.isNumber(day)) {
+                start.day(day);
+            }
+
+            var params = {
+                g_i_start_date: start.format('YYYYMMDD'),
+                g_i_stop_date: end.format('YYYYMMDD'),
+                s_inst_id: '11005293', //orgId
+                sys_dt: nowtime.format('YYYYMMDD'),
+                'org.apache.struts.taglib.html.TOKEN': 'a393cc6ad3bc59d89dea8d9dbfa022e4',
+                g_i_unit_property: unit
+            };
+
+            return {
+                url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
+                params: params
+            };
         }
+
+        function yy_fn(subtract, day) {
+            var start = moment(d);
+            var end = moment(d);
+            var nowtime = moment();
+            if (subtract) {
+                start.subtract(1, subtract);
+                end.subtract(1, subtract);
+            }
+
+            if (_.isNumber(day)) {
+                start.day(day);
+            }
+
+            var params = {
+                g_i_start_date: start.format('YYYYMMDD'),
+                g_i_stop_date: end.format('YYYYMMDD'),
+                s_inst_id: '11005293', //orgId
+                sys_dt: nowtime.format('YYYYMMDD'),
+                'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
+                g_i_unit_property: 9
+            };
+
+            return {
+                url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
+                params: params
+            };
+        }
+
     }
 });
