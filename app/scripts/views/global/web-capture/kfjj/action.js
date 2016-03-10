@@ -7,63 +7,97 @@ app.factory('kfjjAction', function ($q, webLogs, date, config, actionProxy) {
     return function (obj) {
         var {web,path,time,date:d} = obj;
 
+        var action = 'http://10.2.3.223/FdimWebApp/Welcome?MainOp=Stat&Stat=';
+
         webLogs.push({message: `[${web.name}] 开始抓取报表`, time: date.nowTime()});
 
-        var gz = [];//国债
-        //GZ04-本年 (今年-01-01  ->  今天)
-        actionProxy(path, `${config.kfjj.gz_year}_${time}.csv`, gz, {
-            web,
-            action: gz_io(null, 0, 1),
-            time,
-            hds: config.kfjj.gz_hds
-        });
+        //国债
+        var maps = {
+            [config.kfjj.gz_year]: gz_io(null, 0, 1),//GZ04-本年
+            [config.kfjj.gz_year_same]: gz_io('year', 0, 1),//GZ04-本年同期
+            [config.kfjj.gz_mon]: gz_io(null, null, 1),//GZ04-本月
+            [config.kfjj.gz_mon_same]: gz_io('year', null, 1)//GZ04-本月同期
+        };
 
-        //GZ04-本年同期 (去年01-01  ->  去年的今天)
-        actionProxy(path, `${config.kfjj.gz_year_same}_${time}.csv`, gz, {
-            web,
-            action: gz_io('year', 0, 1),
-            time,
-            hds: config.kfjj.gz_hds
-        });
+        return $q.all(play(maps, config.kfjj.gz_hds)).then(function () {
+            //基金
+            var maps = {
+                [config.kfjj.jj_year]: jj_io(null, 0, 1),//JJ03-本年
+                [config.kfjj.jj_year_same]: jj_io('year', 0, 1),//JJ03-本年同期
+                [config.kfjj.jj_day]: jj_io(),//JJ03-本日
+                [config.kfjj.jj_day_same]: jj_io('year'),//JJ03-本日同期
+                [config.kfjj.jj_mon]: jj_io(null, null, 1),//JJ03-本月
+                [config.kfjj.jj_mon_same]: jj_io('year', null, 1)//JJ03-本月同期
+            };
 
-        //GZ04-本月 (今年-今月-01  -> 今天)
-        actionProxy(path, `${config.kfjj.gz_year}_${time}.csv`, gz, {
-            web,
-            action: gz_io(null, null, 1),
-            time,
-            hds: config.kfjj.gz_hds
-        });
-
-        //GZ04-本月同期 (去年-今月-01  -> 去年-今月-今天)
-        actionProxy(path, `${config.kfjj.gz_year_same}_${time}.csv`, gz, {
-            web,
-            action: gz_io('year', null, 1),
-            time,
-            hds: config.kfjj.gz_hds
-        });
-
-        return $q.all(gz).then(function () {
-            var jj = [];//基金
-
-            //JJ03-本年
-            //JJ03-本年同期
-            //JJ03-本日
-            //JJ03-本日同期
-            //JJ03-本月
-            //JJ03-本月同期
-
-            return $q.all(jj);
+            return $q.all(play(maps, config.kfjj.jj_hds));
         }).then(function () {
-            var lc = [];//理财
+            //理财
+            var maps = {
+                [config.kfjj.lc_day]: lc_io(),//LC05-本日
+                [config.kfjj.lc_day_same]: lc_io('day'),//LC05-上日
+                [config.kfjj.lc_day_total]: lc_io(null, null, null, -1)//LC05-邮银合计
+            };
 
-            //LC05-本日
-            //LC05-上日
-            //LC05-邮银合计
-
-            return $q.all(lc);
+            return $q.all(play(maps, config.kfjj.lc_hds));
         });
 
+        function play(maps, hds) {
+            var promises = [];
+            _.each(maps, function (action, name) {
+                actionProxy(path, `${name}_${time}.csv`, promises, {
+                    web,
+                    action: action,
+                    time,
+                    hds: hds
+                });
+            });
+            return promises;
+        }
+
+        //理财
+        function lc_io(subtract, mon, day, organtype) {
+            var name = 'LC05';
+            return {
+                url: action + name,
+                params: _def({
+                    paraPayFlag: name,
+                    setupflag: 0,
+                    organtype: organtype || 2
+                }, dt(subtract, mon, day))
+            };
+        }
+
+        //基金
+        function jj_io(subtract, mon, day) {
+            var name = 'JJ03';
+            return {
+                url: action + name,
+                params: _def({
+                    olevel: 0,
+                    agentCorpCode: -1,
+                    organtype: 2,
+                    risklevel: -1,
+                    chargerate: -1,
+                    reporttType: 1
+                }, dt(subtract, mon, day), name)
+            };
+        }
+
+        //国债
         function gz_io(subtract, mon, day) {
+            var name = 'GZ04';
+            return {
+                url: action + name,
+                params: _def({
+                    olevel: 0,
+                    kindtype: -1,
+                    organtype: 2
+                }, dt(subtract, mon, day), name)
+            };
+        }
+
+        function dt(subtract, mon, day) {
             var start = moment(d);
             var end = moment(d);
             if (subtract) {
@@ -77,28 +111,29 @@ app.factory('kfjjAction', function ($q, webLogs, date, config, actionProxy) {
                 start.month(mon);
             }
 
+            return [start, end];
+        }
+
+        function _def(param, ds, rid) {
+            var [start , end] = ds;
             var params = {
-                paraPayFlag: 'GZ04',
+                paraPayFlag: rid,
+                rid: rid,
                 hidecountry: 11005293,
                 hideprovince: -1,
                 hidecity: -1,
                 hidearea: -1,
                 hidebranch: -1,
-                olevel: 0,
-                rid: 'GZ04',
                 province: -1,
-                kindtype: -1,
                 area: -1,
                 city: -1,
                 kindCode: -1,
                 branch: -1,
                 searchlevel: 'provincecode',
-                organtype: 2,
                 sellchnlno: -1,
                 searchkind: -1,
                 paraPeriod: 'y',
 
-                //start
                 bYear: start.format('YYYY'),
                 bMonth: start.format('MM'),
                 bDay: start.format('DD'),
@@ -109,11 +144,7 @@ app.factory('kfjjAction', function ($q, webLogs, date, config, actionProxy) {
                 paraDay: end.format('DD')
             };
 
-            return {
-                url: 'http://10.2.3.223/FdimWebApp/Welcome?MainOp=Stat&Stat=GZ04',
-                params: params
-            };
+            return _.extend(params, param);
         }
-
     }
 });

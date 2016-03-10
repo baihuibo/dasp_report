@@ -37,11 +37,13 @@ export default {
         jj_day_same: 'FUND_JJ_DAY_SAME',
         jj_mon: 'FUND_JJ_MON',
         jj_mon_same: 'FUND_JJ_MON_SAME',
+        jj_hds: [0, 2],
 
         //理财
         lc_day: 'FUND_LC_DAY',
         lc_day_same: 'FUND_LC_DAY_SAME',
-        lc_day_total: 'FUND_LC_DAY_TOTAL'
+        lc_day_total: 'FUND_LC_DAY_TOTAL',
+        lc_hds: [0, 2]
     },
     logDebugEnabled: true
 };
