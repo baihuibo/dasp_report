@@ -4,6 +4,12 @@
 var ipcRenderer = require('electron').ipcRenderer;
 
 ipcRenderer.on('auth', function (ev, auth) {
+    var class2 = $('.class2');
+    if (class2) {
+        ipcRenderer.sendToHost('logerr', class2.innerText);
+        return;
+    }
+
     var organCode = $('[name="organCode"]');
     if (organCode) {
         organCode.value = auth.org;
@@ -34,5 +40,5 @@ function $(selector) {
 }
 
 window.alert = function (msg) {
-    ipcRenderer.sendToHost('logerr', msg);
+    ipcRenderer.sendToHost('debug', 'alert', msg);
 };

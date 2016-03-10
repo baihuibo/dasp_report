@@ -1,8 +1,7 @@
 /**
  * Created by baihuibo on 16/3/8.
  */
-var ipcRenderer = require('electron').ipcRenderer;
-exports.dljrResult = function (trs, obj) {
+module.exports = function (trs, obj) {
     var slice = [].slice;
 
     var hds = slice.call(trs, obj.hds[0], obj.hds[1]);

@@ -4,7 +4,7 @@
 import app from 'app';
 
 //网站登录
-app.factory('webLogin', function ($q) {
+app.factory('webLogin', function ($q, $log) {
     return function (webInfo) {
         var q = $q.defer();
 
@@ -25,6 +25,11 @@ app.factory('webLogin', function ($q) {
         });
 
         webview.addEventListener('ipc-message', function (e) {
+            if (e.channel === 'debug') {
+                $log.debug('debug', e.args);
+                return;
+            }
+
             if (e.channel === 'logon') {
                 q.resolve();
             } else {
