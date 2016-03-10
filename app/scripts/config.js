@@ -28,6 +28,7 @@ export default {
         gz_year_same: 'FUND_GZ_YEAR_SAME',
         gz_mon: 'FUND_GZ_MON',
         gz_mon_same: 'FUND_GZ_MON_SAME',
+        gz_hds: [0, 1],
 
         //基金
         jj_year: 'FUND_JJ_YEAR',

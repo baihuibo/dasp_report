@@ -10,13 +10,37 @@ app.factory('kfjjAction', function ($q, webLogs, date, config, actionProxy) {
         webLogs.push({message: `[${web.name}] 开始抓取报表`, time: date.nowTime()});
 
         var gz = [];//国债
-        //国债
-
         //GZ04-本年 (今年-01-01  ->  今天)
-        //GZ04-本年同期 (去年01-01  ->  去年的今天)
-        //GZ04-本月 (今年-今月-01  -> 今天)
-        //GZ04-本月同期 (去年-同月-01  -> 去年-同月-今天)
+        actionProxy(path, `${config.kfjj.gz_year}_${time}.csv`, gz, {
+            web,
+            action: gz_io(null, 0, 1),
+            time,
+            hds: config.kfjj.gz_hds
+        });
 
+        //GZ04-本年同期 (去年01-01  ->  去年的今天)
+        actionProxy(path, `${config.kfjj.gz_year_same}_${time}.csv`, gz, {
+            web,
+            action: gz_io('year', 0, 1),
+            time,
+            hds: config.kfjj.gz_hds
+        });
+
+        //GZ04-本月 (今年-今月-01  -> 今天)
+        actionProxy(path, `${config.kfjj.gz_year}_${time}.csv`, gz, {
+            web,
+            action: gz_io(null, null, 1),
+            time,
+            hds: config.kfjj.gz_hds
+        });
+
+        //GZ04-本月同期 (去年-今月-01  -> 去年-今月-今天)
+        actionProxy(path, `${config.kfjj.gz_year_same}_${time}.csv`, gz, {
+            web,
+            action: gz_io('year', null, 1),
+            time,
+            hds: config.kfjj.gz_hds
+        });
 
         return $q.all(gz).then(function () {
             var jj = [];//基金
@@ -39,32 +63,56 @@ app.factory('kfjjAction', function ($q, webLogs, date, config, actionProxy) {
             return $q.all(lc);
         });
 
-        function gz(rpa, subtract) {
-            var action = 'http://plserver/rptsearch/splitUrltoReadReport.action';
-            var m = moment(d);
+        function gz_io(subtract, mon, day) {
+            var start = moment(d);
+            var end = moment(d);
             if (subtract) {
-                m.subtract(1, 'year');
+                start.subtract(1, subtract);
+                end.subtract(1, subtract);
             }
-            var params = [
-                'detailFunId=FRL-RPT-02-004',
-                `oGlobalFunId=1918`,
-                'repTypeCd=2',
-                'p_srcOrgCd=999999888',
-                'p_srcOrgLev=1',
-                'p_provCd=99',
-                'p_repserverconcd=5',
-                'p_rptCyc=0',
-                `p_dateDesc=${m.format('YYYY')}year${m.format('MM')}month${m.format('DD')}day`,
-                `p_beginDate=${m.format('YYYYMMDD')}`,
-                `p_beginMonth=${m.format('YYYYMM')}`,
-                `p_endDate=${m.format('YYYYMMDD')}`,
-                `p_endMonth=${m.format('YYYYMM')}`,
-                'p_dateCount=0',
-                `rpa_44=${rpa}`,
-                'rpa_281=2',
-                'outputFormat=HTML'
-            ];
-            return action + '?' + params.join('&');
+            if (_.isNumber(day)) {
+                start.date(day);
+            }
+            if (_.isNumber(mon)) {
+                start.month(mon);
+            }
+
+            var params = {
+                paraPayFlag: 'GZ04',
+                hidecountry: 11005293,
+                hideprovince: -1,
+                hidecity: -1,
+                hidearea: -1,
+                hidebranch: -1,
+                olevel: 0,
+                rid: 'GZ04',
+                province: -1,
+                kindtype: -1,
+                area: -1,
+                city: -1,
+                kindCode: -1,
+                branch: -1,
+                searchlevel: 'provincecode',
+                organtype: 2,
+                sellchnlno: -1,
+                searchkind: -1,
+                paraPeriod: 'y',
+
+                //start
+                bYear: start.format('YYYY'),
+                bMonth: start.format('MM'),
+                bDay: start.format('DD'),
+
+                //end
+                paraYear: end.format('YYYY'),
+                paraMonth: end.format('MM'),
+                paraDay: end.format('DD')
+            };
+
+            return {
+                url: 'http://10.2.3.223/FdimWebApp/Welcome?MainOp=Stat&Stat=GZ04',
+                params: params
+            };
         }
 
     }
