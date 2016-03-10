@@ -3,6 +3,8 @@
  */
 import app from 'app';
 import './web-capture/dljr/action';
+import './web-capture/dlbx/action';
+import './web-capture/kfjj/action';
 
 app.factory('actionProxy', function (webCaptureProxy, writeFile, fs) {
     return function proxy(path, file, promises, obj) {
