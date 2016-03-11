@@ -9,7 +9,15 @@ app.config(function ($logProvider) {
     $logProvider.debugEnabled(config.logDebugEnabled);
 });
 
-app.run(function ($rootScope, currentWebContents, currentWindow) {
+app.factory('downProxy', function () {
+    return {};
+});
+
+app.factory('basePath', function () {
+    return __dirname;
+});
+
+app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, request, downProxy, $log) {
 
     currentWindow.show();
 
@@ -32,6 +40,25 @@ app.run(function ($rootScope, currentWebContents, currentWindow) {
     $rootScope.closeWindow = function () {
         currentWindow.close();
     };
+
+    var filter = {
+        urls: ["http://10.2.3.237:7001/ncpai/print/*.html"]
+    };
+
+    currentWebContents.session.webRequest.onHeadersReceived(filter, function (details, callback) {
+        if (downProxy.downName) {
+            request(details.url)
+                .pipe(iconvLite.decodeStream('gbk'))
+                .pipe(iconvLite.encodeStream('utf-8'))
+                .pipe(fs.createWriteStream(`./app/download/${downProxy.downName}.html`))
+                .on('finish', function () {
+                    downProxy.done && downProxy.done();
+                });
+
+            $log.log('取消原请求访问');
+            callback({cancel: true});
+        }
+    });
 });
 
 angular.bootstrap(document, ['app']);

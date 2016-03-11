@@ -10,47 +10,45 @@ app.factory('kfjjAction', function ($q, webLogs, date, config, actionProxy) {
         var action = 'http://10.2.3.223/FdimWebApp/Welcome?MainOp=Stat&Stat=';
 
         webLogs.push({message: `[${web.name}] 开始抓取报表`, time: date.nowTime()});
+        var kfjj = config.kfjj;
 
         //国债
         var maps = {
-            [config.kfjj.gz_year]: gz_io(null, 0, 1),//GZ04-本年
-            [config.kfjj.gz_year_same]: gz_io('year', 0, 1),//GZ04-本年同期
-            [config.kfjj.gz_mon]: gz_io(null, null, 1),//GZ04-本月
-            [config.kfjj.gz_mon_same]: gz_io('year', null, 1)//GZ04-本月同期
+            [kfjj.gz_year]: gz_io(null, 0, 1),//GZ04-本年
+            [kfjj.gz_year_same]: gz_io('year', 0, 1),//GZ04-本年同期
+            [kfjj.gz_mon]: gz_io(null, null, 1),//GZ04-本月
+            [kfjj.gz_mon_same]: gz_io('year', null, 1)//GZ04-本月同期
         };
 
-        return $q.all(play(maps, config.kfjj.gz_hds)).then(function () {
-            //基金
-            var maps = {
-                [config.kfjj.jj_year]: jj_io(null, 0, 1),//JJ03-本年
-                [config.kfjj.jj_year_same]: jj_io('year', 0, 1),//JJ03-本年同期
-                [config.kfjj.jj_day]: jj_io(),//JJ03-本日
-                [config.kfjj.jj_day_same]: jj_io('year'),//JJ03-本日同期
-                [config.kfjj.jj_mon]: jj_io(null, null, 1),//JJ03-本月
-                [config.kfjj.jj_mon_same]: jj_io('year', null, 1)//JJ03-本月同期
-            };
+        return $q.all(getReports(maps, kfjj.gz_hds))
+            .then(function () {
+                //基金
+                var maps = {
+                    [kfjj.jj_year]: jj_io(null, 0, 1),//JJ03-本年
+                    [kfjj.jj_year_same]: jj_io('year', 0, 1),//JJ03-本年同期
+                    [kfjj.jj_day]: jj_io(),//JJ03-本日
+                    [kfjj.jj_day_same]: jj_io('year'),//JJ03-本日同期
+                    [kfjj.jj_mon]: jj_io(null, null, 1),//JJ03-本月
+                    [kfjj.jj_mon_same]: jj_io('year', null, 1)//JJ03-本月同期
+                };
 
-            return $q.all(play(maps, config.kfjj.jj_hds));
-        }).then(function () {
-            //理财
-            var maps = {
-                [config.kfjj.lc_day]: lc_io(),//LC05-本日
-                [config.kfjj.lc_day_same]: lc_io('day'),//LC05-上日
-                [config.kfjj.lc_day_total]: lc_io(null, null, null, -1)//LC05-邮银合计
-            };
+                return $q.all(getReports(maps, kfjj.jj_hds));
+            })
+            .then(function () {
+                //理财
+                var maps = {
+                    [kfjj.lc_day]: lc_io(),//LC05-本日
+                    [kfjj.lc_day_same]: lc_io('day'),//LC05-上日
+                    [kfjj.lc_day_total]: lc_io(null, null, null, -1)//LC05-邮银合计
+                };
 
-            return $q.all(play(maps, config.kfjj.lc_hds));
-        });
+                return $q.all(getReports(maps, kfjj.lc_hds));
+            });
 
-        function play(maps, hds) {
+        function getReports(maps, hds) {
             var promises = [];
             _.each(maps, function (action, name) {
-                actionProxy(path, `${name}_${time}.csv`, promises, {
-                    web,
-                    action: action,
-                    time,
-                    hds: hds
-                });
+                actionProxy(path, `${name}_${time}.csv`, promises, {web, action, time, hds});
             });
             return promises;
         }

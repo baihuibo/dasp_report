@@ -4,9 +4,17 @@
 import app from 'app';
 
 //报表采集
-app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
+app.factory('webCaptureProxy', function ($q, webLogs, date, $log, downProxy) {
     return function (obj) {
         var q = $.Deferred();
+
+        if (obj.down) {
+            downProxy.downName = obj.down;
+            downProxy.done = function () {
+                view.send('down', obj);
+                downProxy.downName = downProxy.done = null;
+            };
+        }
 
         var view = document.createElement('webview');
 
@@ -20,6 +28,7 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
         wrapper.appendChild(view);
 
         view.addEventListener('dom-ready', function () {
+            //view.openDevTools();
             view.send('action', obj);
         });
 
@@ -33,6 +42,10 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log) {
                 $log.debug('err msg : ', e.args);
                 view.reload();
             }
+        });
+
+        view.addEventListener('console-message', function (e) {
+            console.log('view console-message:', e.message);
         });
 
         return q.promise();

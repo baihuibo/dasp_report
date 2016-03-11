@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "easy-zip": "0.0.4",
+    "electron-logger": "0.0.3",
     "gbk": "^0.1.0",
     "nodemailer": "^2.2.1"
   }

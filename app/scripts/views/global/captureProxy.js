@@ -9,7 +9,7 @@ import './web-capture/kfjj/action';
 app.factory('actionProxy', function (webCaptureProxy, writeFile, fs) {
     return function proxy(path, file, promises, obj) {
         if (!fs.existsSync(path + '/' + file)) {
-            var promise = webCaptureProxy(obj);//webInfo, action, date, type
+            var promise = webCaptureProxy(obj);//webInfo, action, date, type,down
             writeFile(promise, file, path);
             promises.push(promise);
         }

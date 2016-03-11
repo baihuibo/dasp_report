@@ -24,6 +24,10 @@ app.factory('webLogin', function ($q, $log) {
             webview.send('auth', webInfo.auth);
         });
 
+        webview.addEventListener('console-message', function (e) {
+            console.log('webLogin view console-message:', e.message);
+        });
+
         webview.addEventListener('ipc-message', function (e) {
             if (e.channel === 'debug') {
                 $log.debug('debug', e.args);

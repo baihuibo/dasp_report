@@ -19,8 +19,12 @@ base.config(function (remoteProvider) {
     remoteProvider.register('EasyZip', function (remote) {
         return remote.require('easy-zip');
     });
+    remoteProvider.register('iconvLite', function (remote) {
+        return remote.require('iconv-lite');
+    });
 
     remoteProvider.register('nodemailer');
+    remoteProvider.register('request');
     remoteProvider.register('gbk');
 });
 base.factory('toast', function ($mdToast) {

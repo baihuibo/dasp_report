@@ -6,8 +6,7 @@ var util = require('../util.js');
 ipcRenderer.on('action', function (ev, obj) {
     var frame = $('iframe');
     frame.onload = function () {
-        ipcRenderer.sendToHost('debug', 'loaded', frame.contentWindow.location.href);
-        if (frame.contentWindow.location.href.indexOf('/print/') > -1) {
+        if (frame.contentWindow.location.href.indexOf('/download/') > -1) {
             waitFor.t = 0;
             waitFor(frame.contentDocument, function done(doc) {
                 ipcRenderer.sendToHost('result', getResult(doc, obj));
@@ -28,6 +27,12 @@ ipcRenderer.on('action', function (ev, obj) {
 
     form.action = obj.action.url;
     form.submit();
+});
+
+ipcRenderer.on('down', function (e, obj) {
+    var frame = $('iframe');
+    frame.src = `${obj.basePath}/download/${obj.down}.html`;
+    ipcRenderer.sendToHost('debug', 'downfile', frame.src);
 });
 
 function getResult(doc, obj) {

@@ -11,34 +11,32 @@ app.factory('dljrAction', function ($q, webLogs, date, config, actionProxy) {
 
         webLogs.push({message: `[${web.name}] 开始抓取报表`, time: date.nowTime()});
 
+        var dljrc = config.dljr;
+
         var maps = {
-            [config.dljr.bank]: dljr(config.dljr.rpa1),
-            [config.dljr.proxy]: dljr(config.dljr.rpa2),
-            [config.dljr.bank_same]: dljr(config.dljr.rpa1, 1),
-            [config.dljr.proxy_same]: dljr(config.dljr.rpa2, 1)
+            [dljrc.bank]: dljr(dljrc.rpa1),
+            [dljrc.proxy]: dljr(dljrc.rpa2),
+            [dljrc.bank_same]: dljr(dljrc.rpa1, 1),
+            [dljrc.proxy_same]: dljr(dljrc.rpa2, 1)
         };
 
-        return $q.all(play(maps, config.dljr.hds1)).then(function () {
-            //中国邮政储蓄存款余额分种类统计表-日报
-            var maps = {
-                [config.dljr.div_bank]: dljr2(config.dljr.rpa1),
-                [config.dljr.div_total]: dljr2(config.dljr.rpa2),
-                [config.dljr.div_bank_same]: dljr2(config.dljr.rpa1, 1),
-                [config.dljr.div_total_same]: dljr2(config.dljr.rpa2, 1)
-            };
+        return $q.all(getReports(maps, config.dljr.hds1))
+            .then(function () {
+                //中国邮政储蓄存款余额分种类统计表-日报
+                var maps = {
+                    [dljrc.div_bank]: dljr2(dljrc.rpa1),
+                    [dljrc.div_total]: dljr2(dljrc.rpa2),
+                    [dljrc.div_bank_same]: dljr2(dljrc.rpa1, 1),
+                    [dljrc.div_total_same]: dljr2(dljrc.rpa2, 1)
+                };
 
-            return $q.all(play(maps, config.dljr.hds2));
-        });
+                return $q.all(getReports(maps, dljrc.hds2));
+            });
 
-        function play(maps, hds) {
+        function getReports(maps, hds) {
             var promises = [];
             _.each(maps, function (action, name) {
-                actionProxy(path, `${name}_${time}.csv`, promises, {
-                    web,
-                    action: action,
-                    time,
-                    hds: hds
-                });
+                actionProxy(path, `${name}_${time}.csv`, promises, {web, action, time, hds});
             });
             return promises;
         }
