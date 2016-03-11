@@ -1,17 +1,20 @@
 /**
  * Created by baihuibo on 16/3/8.
  */
-module.exports = function (trs, obj) {
+module.exports = function util(rows, obj) {
     var slice = [].slice;
 
-    var hds = slice.call(trs, obj.hds[0], obj.hds[1]);
-    var bodys = slice.call(trs, obj.hds[1]);
+    var headers = slice.call(rows, obj.hds[0], obj.hds[1]);
+    var bodys = slice.call(rows, obj.hds[1]);
 
-    hds = map(hds, function (hr) {
-        return getTitle(hr.children, ['date'])
+    headers = map(headers, function (hr) {
+        var row = ['date'];
+        row._hr = hr;
+        return row
     });
 
-    return [].concat(normals(hds), getRows(bodys, obj.time || ''));
+    formatHeaders(headers);
+    return [].concat(normals(headers), formatBodys(bodys, obj.time || ''));
 };
 
 function normals(hds) {
@@ -42,33 +45,45 @@ function getValue(i, idx, rows) {
     }
 }
 
-function getRows(bodys, date) {
+function formatBodys(bodys, date) {
     var rows = [];
 
     each(bodys, function (tr) {
-        rows.push([date].concat(getRow(tr.children)));
+        rows.push([date].concat(map(tr.cells, getText)));
     });
 
     return rows;
 }
 
-function getRow(tds) {
-    return map(tds, getText);
-}
-
-function getTitle(rowCols, arr) {
-    each(rowCols, function (cell) {
-        if (cell.colSpan > 1) {
-            var text = getText(cell);
-            arr.push(text);
-            for (var j = 1; j < cell.colSpan; j++) {
-                arr.push(text);
-            }
-        } else {
-            arr.push(getText(cell));
-        }
+function formatHeaders(rows) {
+    each(rows, function (row, rowIdx) {
+        each(row._hr.cells, function (cell) {
+            var val = getText(cell);
+            var rowSpan = cell.rowSpan || 1,
+                colSpan = cell.colSpan || 1;
+            cellPut(rows, rowIdx, rowSpan, colSpan, val);
+        });
     });
-    return arr;
+
+    function cellPut(arr, rid, rSpan, cSpan, val) {
+        var x = getStartX(arr[rid]);
+        var row;
+        for (var i = 0; i < rSpan; i++) {
+            row = arr[rid + i];
+            for (var j = 0; j < cSpan; j++) {
+                row[x + j] = val;
+            }
+        }
+    }
+
+    function getStartX(arr) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] === void 0) {
+                return i;
+            }
+        }
+        return i;
+    }
 }
 
 function getText(el) {
@@ -92,9 +107,9 @@ function map(list, callback) {
 }
 
 function $(selector, context) {
-    return context.querySelector(selector);
+    return (context || document).querySelector(selector);
 }
 
 function $$(selector, context) {
-    return context.querySelectorAll(selector);
+    return (context || document).querySelectorAll(selector);
 }
