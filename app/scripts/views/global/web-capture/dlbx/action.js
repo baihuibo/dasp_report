@@ -14,7 +14,8 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
             hds_qj = dlbx.hds_qj,
             hds_yy = dlbx.hds_yy;
 
-        return $q.all(getReport(dlbx.insu_day, dl_fn(), hds_dl)(1))//代理-本日
+        return $q.all()//代理-本日
+            .then(getReport(dlbx.insu_day, dl_fn(), hds_dl))//代理-本日
             .then(getReport(dlbx.insu_day_same, dl_fn('year'), hds_dl))//代理-本日同期
             .then(getReport(dlbx.insu_month, dl_fn(null, 1), hds_dl))//代理-本月
             .then(getReport(dlbx.insu_month_same, dl_fn('year', 1), hds_dl))//代理-本月同期

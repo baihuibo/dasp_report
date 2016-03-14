@@ -25,7 +25,7 @@ app.factory('webLogin', function ($q, $log) {
         });
 
         webview.addEventListener('console-message', function (e) {
-            console.log('webLogin view console-message:', e.message);
+            $log.debug('webLogin view console-message:', e.message);
         });
 
         webview.addEventListener('ipc-message', function (e) {
