@@ -60,11 +60,9 @@ base.factory('timer', function ($log) {
     var calls = {};
 
     setInterval(function () {
-        var d = moment().toArray();
-        //d = [yyyy,MM,dd,hh,mm,ss]
-        var time = d[3] + ':' + d[4];
+        var time = moment().format('HH:mm');
 
-        $log.debug('timer : ', time + ':' + d[5]);
+        $log.debug('timer : ', time);
 
         try {
             if (calls[time] && !calls[time].called) {
@@ -76,7 +74,7 @@ base.factory('timer', function ($log) {
     }, 5 * 1000);
 
     return {
-        reg: function (time, msg, call) {
+        registry: function (time, msg, call) {
             if (arguments.length === 3) {
                 $log.log('定时器注册.', time, msg);
             } else {
@@ -85,7 +83,7 @@ base.factory('timer', function ($log) {
             calls[time] = call;
         },
 
-        unReg: function (time, call) {
+        destroy: function (time) {
             delete calls[time];
         }
     };
