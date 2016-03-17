@@ -3,7 +3,7 @@
  */
 import app from 'app';
 
-app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, basePath) {
+app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, basePath, $log) {
     return function (obj) {
         var {web,path,time,date:d} = obj;
 
@@ -63,7 +63,7 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
 
         function yy_fn(subtract, day) {
             return {
-                url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
+                url: 'http://10.2.3.237:7001/ncpai/report_581711_0.do',
                 params: _def({
                     'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
                     g_i_unit_property: 9
@@ -80,7 +80,7 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
             }
 
             if (_.isNumber(day)) {
-                start.day(day);
+                start.startOf('month');
             }
             return [start, end, moment()];
         }
