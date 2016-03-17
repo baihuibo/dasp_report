@@ -17,7 +17,7 @@ app.factory('basePath', function () {
     return __dirname;
 });
 
-app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, request, downProxy, $log) {
+app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, request, downProxy, $log, timer) {
 
     currentWindow.show();
 
@@ -58,6 +58,10 @@ app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, 
             $log.log('取消原请求访问');
             callback({cancel: true});
         }
+    });
+
+    timer.registry('23:59', function () {
+        location.reload();//重启系统
     });
 });
 

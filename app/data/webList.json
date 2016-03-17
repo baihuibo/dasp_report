@@ -7,10 +7,7 @@
       "name": "CIM9900274",
       "pwd": "dljr68859334"
     },
-    "timer": {
-      "type": "1"
-    },
-    "color": "#ad1457"
+    "color": "#a5d6a7"
   },
   {
     "_type": "kfjj",
@@ -21,10 +18,7 @@
       "name": "admin",
       "pwd": "bocopost"
     },
-    "timer": {
-      "type": "1"
-    },
-    "color": "#ffecb3"
+    "color": "#ffc400"
   },
   {
     "_type": "dlbx",
@@ -35,9 +29,6 @@
       "num": "20150736061",
       "pwd": "00000000"
     },
-    "timer": {
-      "type": "1"
-    },
-    "color": "#ff9800"
+    "color": "#009688"
   }
 ]
