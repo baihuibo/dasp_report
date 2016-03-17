@@ -71,20 +71,51 @@ base.factory('timer', function ($log) {
             }
         } catch (e) {
         }
-    }, 5 * 1000);
+    }, 60 * 1000);
 
     return {
-        registry: function (time, msg, call) {
-            if (arguments.length === 3) {
-                $log.log('定时器注册.', time, msg);
-            } else {
-                call = msg;
-            }
+        registry: function (time, call, msg) {
+            $log.log('定时器注册.', time, msg || '');
             calls[time] = call;
         },
 
         destroy: function (time) {
             delete calls[time];
+        },
+
+        setTask: function (opt, call) {
+            var toDay = moment();
+            if (opt && opt.enable == 1 && test(opt)) {
+                switch (opt.type) {
+                    case '0'://一次执行
+                    case '1'://每天执行,时间区间
+                        this.registry(opt.startTime, call);
+                        break;
+                    case '2'://每周执行
+                        if (opt.week.indexOf(toDay.day() + '') > -1) {
+                            this.registry(opt.startTime, call);
+                        }
+                        break;
+                    case '3'://每月执行
+                        if (opt.days.indexOf(toDay.date() + '') > -1) {
+                            this.registry(opt.startTime, call);
+                        }
+                        break;
+                }
+            }
+
+            //校验时间范围
+            function test(opt) {
+                if (opt.type == 0) {
+                    return toDay.isSame(moment(opt.date), 'day');
+                }
+
+                var sd = moment(opt.startDate);
+                var ed = moment(opt.endDate);
+
+                return ((toDay.isSame(sd, 'day') || sd.isBefore(toDay, 'day'))
+                && (toDay.isSame(ed, 'day') || ed.isAfter(toDay, 'day')));
+            }
         }
     };
 });

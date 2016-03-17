@@ -1,0 +1,100 @@
+<md-dialog aria-label="Mango (Fruit)" ng-cloak>
+    <form name="st" novalidate>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>设置定时器</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon>close</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content layout="column" layout-padding style="width: 600px;">
+                <section flex layout="column">
+                    <md-input-container class="md-block">
+                        <label>启用</label>
+                        <md-select ng-model="opt.enable" name="enable" required>
+                            <md-option value="1">开启</md-option>
+                            <md-option value="0">关闭</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>启动方式</label>
+                        <md-select ng-model="opt.type" name="type" required ng-disabled="!enabled">
+                            <md-option value="0">一次</md-option>
+                            <md-option value="1">每天</md-option>
+                            <md-option value="2">每周</md-option>
+                            <md-option value="3">每月</md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <div ng-if="opt.type == 0" layout="row" layout-align="center center">
+                        <md-input-container class="md-block" flex>
+                            <label>启动时间</label>
+                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                        </md-input-container>
+                        <md-datepicker ng-model="opt.date" md-placeholder="选择日期" ng-disabled="!enabled"></md-datepicker>
+                    </div>
+
+                    <div ng-if="opt.type == 1" layout="row">
+                        <md-input-container class="md-block" flex>
+                            <label>启动时间</label>
+                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                        </md-input-container>
+                    </div>
+
+                    <div ng-if="opt.type == 2" layout="row">
+                        <md-input-container class="md-block" flex>
+                            <label>选择星期</label>
+                            <cu-week-time-select ng-model="opt.week" multiple required
+                                                 ng-disabled="!enabled"></cu-week-time-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex>
+                            <label>启动时间</label>
+                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                        </md-input-container>
+                    </div>
+
+                    <div ng-if="opt.type == 3" layout="row">
+                        <md-input-container class="md-block" flex>
+                            <label>选择当月的某天</label>
+                            <cu-date-select ng-model="opt.days" multiple required
+                                            ng-disabled="!enabled"></cu-date-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex>
+                            <label>启动时间</label>
+                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                        </md-input-container>
+                    </div>
+
+                    <div ng-if="opt.type != 0">
+                        <h5 style="color: #7C7C7C;margin-bottom: .7em;margin-top: .5em;">使用计划</h5>
+                        <div layout="row" layout-align="center center">
+                            <md-datepicker ng-model="opt.startDate"
+                                           md-placeholder="开始" md-max-date="opt.endDate"
+                                           ng-disabled="!enabled"></md-datepicker>
+                            <span style="margin: 0 1em 0 2em;">到</span>
+                            <md-datepicker ng-model="opt.endDate" md-min-date="opt.startDate" md-placeholder="结束"
+                                           ng-disabled="!enabled">
+                            </md-datepicker>
+                        </div>
+                    </div>
+
+                    <h5 style="margin-bottom: 0;" class="text-center">{{getMsg(opt)}}</h5>
+                </section>
+            </md-content>
+
+        </md-dialog-content>
+        <md-dialog-actions class="text-right">
+            <md-button ng-click="answer(opt)" ng-if="!enabled">保存</md-button>
+            <md-button ng-click="answer(opt)" ng-if="enabled" ng-disabled="st.$invalid">保存</md-button>
+            <md-button ng-click="answer()" style="margin-right:20px;">
+                取消
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

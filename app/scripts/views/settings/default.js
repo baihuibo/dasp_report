@@ -61,22 +61,6 @@ app.controller('SettingsCtrl', function ($scope, $mdDialog, toast, webList, dial
         });
     };
 
-    $scope.setTimer = function (ev, src) {
-        $mdDialog.show({
-                controller: SetTimerDialogController,
-                templateUrl: 'scripts/views/settings/setTimer.html',
-                targetEvent: ev,
-                locals: {
-                    web: src
-                }
-            })
-            .then(function (web) {
-                _.extendWith(src, web);
-                webList.saveAsFile();
-                //save
-            });
-    };
-
     if ($routeParams.savePath) {
         $timeout(function () {
             $scope.setSavePath();
@@ -89,10 +73,5 @@ function SetInfoDialogController($scope, $mdDialog, dialogImpr, web) {
     $scope.checkField = function (val) {
         return typeof val !== 'undefined';
     };
-    $scope.web = angular.copy(web);
-}
-
-function SetTimerDialogController($scope, $mdDialog, dialogImpr, web) {
-    dialogImpr($scope, $mdDialog);
     $scope.web = angular.copy(web);
 }
