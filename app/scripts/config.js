@@ -60,9 +60,16 @@ export default {
         insu_total_mon_same: 'INSU_TOTAL_MON_SAME',//邮银-本月同期
 
         insu_dev_base_data: 'INSU_DEV_BASE_DATA',//中邮保险业务发展情况基础数据
+
+        INSU_CHINA_POST_DAY: 'INSU_CHINA_POST_DAY',
+        INSU_CHINA_POST_MON_SAME: 'INSU_CHINA_POST_MON_SAME',
+        INSU_CHINA_POST_MON: 'INSU_CHINA_POST_MON',
+        INSU_CHINA_POST_MON_ALL: 'INSU_CHINA_POST_MON_ALL',
+
         hds_dl: [0, 4], //代理表头
         hds_qj: [0, 3], //期缴表头
-        hds_yy: [0, 4] //邮银表头
+        hds_yy: [0, 4], //邮银表头
+        hds_zy: [0, 3]  //中邮
     },
     logDebugEnabled: true
 };

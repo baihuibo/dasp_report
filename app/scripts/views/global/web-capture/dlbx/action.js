@@ -12,7 +12,8 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
         var dlbx = config.dlbx,
             hds_dl = dlbx.hds_dl,
             hds_qj = dlbx.hds_qj,
-            hds_yy = dlbx.hds_yy;
+            hds_yy = dlbx.hds_yy,
+            hds_zy = dlbx.hds_zy;
 
         return $q.all()//代理-本日
             .then(getReport(dlbx.insu_day, dl_fn(), hds_dl))//代理-本日
@@ -28,6 +29,11 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
 
             .then(getReport(dlbx.insu_total_mon, yy_fn(null, 1), hds_yy))//邮银-本月
             .then(getReport(dlbx.insu_total_mon_same, yy_fn('year', 1), hds_yy))//邮银-本月同期
+
+            .then(getReport(dlbx.INSU_CHINA_POST_DAY, zy_fn(), hds_zy))//代理-本日-中邮
+            .then(getReport(dlbx.INSU_CHINA_POST_MON, zy_fn(null, 1), hds_zy))//代理-本月-中邮
+            .then(getReport(dlbx.INSU_CHINA_POST_MON_SAME, zy_fn('year', 1), hds_zy))//代理-本月同期-中邮
+            .then(getReport(dlbx.INSU_CHINA_POST_MON_ALL, zyhj_fn(null, 1), hds_zy)) //邮银合计-本月-中邮
             ;
 
         function getReport(name, action, hds, first) {
@@ -46,7 +52,10 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
                 url: 'http://10.2.3.237:7001/ncpai/report_581711_0.do',
                 params: _def({
                     'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
-                    g_i_unit_property: 2
+                    g_i_unit_property: 2,
+                    _stn_id: '9903',
+                    g_i_insu_cd: '',
+                    g_i_unit_scp: '9'
                 }, _ds(subtract, day))
             };
         }
@@ -56,7 +65,10 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
                 url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
                 params: _def({
                     'org.apache.struts.taglib.html.TOKEN': 'a393cc6ad3bc59d89dea8d9dbfa022e4',
-                    g_i_unit_property: unit
+                    g_i_unit_property: unit,
+                    _stn_id: '9903',
+                    g_i_insu_cd: '',
+                    g_i_unit_scp: '9'
                 }, _ds(subtract, day))
             };
         }
@@ -66,7 +78,36 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
                 url: 'http://10.2.3.237:7001/ncpai/report_581711_0.do',
                 params: _def({
                     'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
-                    g_i_unit_property: 9
+                    g_i_unit_property: 9,
+                    _stn_id: '9903',
+                    g_i_insu_cd: '',
+                    g_i_unit_scp: '9'
+                }, _ds(subtract, day))
+            };
+        }
+
+        function zy_fn(subtract, day) {
+            return {
+                url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
+                params: _def({
+                    'org.apache.struts.taglib.html.TOKEN': '43dadf39d833c87866b61ff698fdcec1',
+                    g_i_unit_property: 2,
+                    _stn_id: '9902',
+                    g_i_insu_cd: '0099',
+                    g_i_unit_scp: '9'
+                }, _ds(subtract, day))
+            };
+        }
+
+        function zyhj_fn(subtract, day) {
+            return {
+                url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
+                params: _def({
+                    'org.apache.struts.taglib.html.TOKEN': '43dadf39d833c87866b61ff698fdcec1',
+                    g_i_unit_property: 9,
+                    _stn_id: '9902',
+                    g_i_insu_cd: '0099',
+                    g_i_unit_scp: '9'
                 }, _ds(subtract, day))
             };
         }
