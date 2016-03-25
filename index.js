@@ -3,6 +3,7 @@
  */
 "use strict";
 
+const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
@@ -19,6 +20,10 @@ app.on('window-all-closed', function () {
         app.quit();
     }
 });
+
+if (!fs.existsSync(__dirname + '/app/download/')) {
+    fs.mkdirSync(__dirname + '/app/download/');
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

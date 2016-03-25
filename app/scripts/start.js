@@ -44,10 +44,6 @@ app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, 
     var filter = {
         urls: ["http://10.2.3.237:7001/ncpai/print/*.html"]
     };
-
-    if (!fs.existsSync('./app/download')) {
-        fs.mkdirSync('./app/download');
-    }
     
     currentWebContents.session.webRequest.onHeadersReceived(filter, function (details, callback) {
         if (downProxy.downName) {
