@@ -44,13 +44,18 @@ app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, 
     var filter = {
         urls: ["http://10.2.3.237:7001/ncpai/print/*.html"]
     };
-    
+
+    var downloadPath = `${__dirname}/download/`;
+    if (!fs.existsSync(downloadPath)) {
+        fs.mkdirSync(downloadPath);
+    }
+
     currentWebContents.session.webRequest.onHeadersReceived(filter, function (details, callback) {
         if (downProxy.downName) {
             request(details.url)
                 .pipe(iconvLite.decodeStream('gbk'))
                 .pipe(iconvLite.encodeStream('utf-8'))
-                .pipe(fs.createWriteStream(`./app/download/${downProxy.downName}.html`))
+                .pipe(fs.createWriteStream(`${downloadPath + downProxy.downName}.html`))
                 .on('finish', function () {
                     downProxy.done && downProxy.done();
                 });
