@@ -6,6 +6,7 @@ var util = require('../util.js');
 ipcRenderer.on('action', function (ev, obj) {
     var frame = $('iframe');
     frame.onload = function () {
+        clearTimeout(timer);
         valid(frame.contentDocument);
 
         if (frame.contentWindow.location.href.indexOf('/download/') > -1) {
@@ -29,6 +30,11 @@ ipcRenderer.on('action', function (ev, obj) {
 
     form.action = obj.action.url;
     form.submit();
+
+    var timer = setTimeout(function () {
+        ipcRenderer.sendToHost('debug', 'reload', 'timeout 30s 未响应');
+        location.reload();
+    }, 30 * 1000);
 });
 
 ipcRenderer.on('down', function (e, obj) {
@@ -65,7 +71,7 @@ function valid(doc) {
 
     var text = doc.body.innerText;
     if (text.indexOf('错误信息') > -1 || text.indexOf('签退') > -1) {
-        ipcRenderer.sendToHost('debug', 'reload', '报表已错误');
+        ipcRenderer.sendToHost('debug', 'reload', text);
         location.reload();
     }
 }
@@ -77,6 +83,8 @@ function waitFor(doc, done, fail) {
     setTimeout(function () {
         if ($('#report', doc)) {
             return done(doc);
+        } else {
+            valid(doc);
         }
         waitFor(doc, done, fail);
     }, 3000);
