@@ -70,15 +70,22 @@ function valid(doc) {
     }
 
     var text = doc.body.innerText;
-    if (text.indexOf('错误信息') > -1 || text.indexOf('签退') > -1) {
+    if (text.indexOf('错误信息') > -1) {
         ipcRenderer.sendToHost('debug', 'reload', text);
         location.reload();
+    } else if (text.indexOf('签退') > -1) {
+        ipcRenderer.sendToHost('relogin', text);
     }
 }
 
 function waitFor(doc, done, fail) {
     waitFor.t++;
     ipcRenderer.sendToHost('debug', 'waitFor', waitFor.t);
+
+    if (waitFor.t == 10) {
+        ipcRenderer.sendToHost('debug', '超时重新启动');
+        return location.reload();
+    }
 
     setTimeout(function () {
         if ($('#report', doc)) {

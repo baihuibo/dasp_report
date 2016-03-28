@@ -4,7 +4,7 @@
 import app from 'app';
 
 //报表采集
-app.factory('webCaptureProxy', function ($q, webLogs, date, $log, downProxy) {
+app.factory('webCaptureProxy', function ($q, webLogs, date, $log, downProxy, $rootScope) {
     return function (obj) {
         var q = $.Deferred();
 
@@ -38,6 +38,12 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log, downProxy) {
                 document.body.removeChild(wrapper);
             } else if (e.channel === 'debug') {
                 $log.debug('debug', e.args);
+            } else if (e.channel === 'relogin') {
+                $log.debug('debug', '操作员已签退,重新登录');
+                $rootScope.login(obj.web, function () {
+                    $log.debug('debug', '重新登录成功');
+                    view.reload();
+                });
             } else {
                 $log.debug('err msg : ', e.args);
                 view.reload();
@@ -45,7 +51,7 @@ app.factory('webCaptureProxy', function ($q, webLogs, date, $log, downProxy) {
         });
 
         view.addEventListener('console-message', function (e) {
-            console.log('view console-message:', e.message);
+            //console.log('view console-message:', e.message);
         });
 
         return q.promise();
