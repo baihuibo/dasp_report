@@ -70,11 +70,11 @@ function valid(doc) {
     }
 
     var text = doc.body.innerText;
-    if (text.indexOf('错误信息') > -1) {
+    if (text.indexOf('签退') > -1) {
+        ipcRenderer.sendToHost('relogin', text);
+    } else if (text.indexOf('错误信息') > -1) {
         ipcRenderer.sendToHost('debug', 'reload', text);
         location.reload();
-    } else if (text.indexOf('签退') > -1) {
-        ipcRenderer.sendToHost('relogin', text);
     }
 }
 

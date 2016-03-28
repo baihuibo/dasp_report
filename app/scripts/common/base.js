@@ -62,7 +62,7 @@ base.factory('timer', function ($log) {
     setInterval(function () {
         var time = moment().format('HH:mm');
 
-        $log.debug('timer : ', time);
+        //$log.debug('timer : ', time);
 
         try {
             if (calls[time] && !calls[time].called) {
