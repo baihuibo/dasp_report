@@ -5,6 +5,11 @@
         <md-icon>timer</md-icon>
         <md-tooltip>{{timerTooltip}}</md-tooltip>
     </md-button>
+    <md-input-container class="capture_date">
+        <md-tooltip>数据周期</md-tooltip>
+        <input type="number" ng-model="captureDay"
+               ng-change="saveCaptureDay()">
+    </md-input-container>
     <md-datepicker ng-model="date" md-placeholder="请选择日期" md-max-date="maxDate"></md-datepicker>
     <md-button style="margin: 0;" ng-click="startAll()">立即启动</md-button>
 </h3>
