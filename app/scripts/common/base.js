@@ -76,7 +76,13 @@ base.factory('timer', function ($log) {
     return {
         registry: function (time, call, msg) {
             $log.log('定时器注册.', time, msg || '');
-            calls[time] = call;
+            if (time && Array.isArray(time)) {// 数组日期
+                time.forEach(function (subTime) {
+                    calls[subTime] = call;
+                });
+            } else {
+                calls[time] = call;
+            }
         },
 
         destroy: function (time) {
