@@ -53,7 +53,7 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
                 params: _def({
                     'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
                     g_i_unit_property: 2,
-                    _stn_id: '9903',
+                    _stn_id: '9901',
                     g_i_insu_cd: '',
                     g_i_unit_scp: '9'
                 }, _ds(subtract, day))
@@ -77,7 +77,7 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
             return {
                 url: 'http://10.2.3.237:7001/ncpai/report_581711_0.do',
                 params: _def({
-                    'org.apache.struts.taglib.html.TOKEN': '912d19e7dc734989ecd8dc40f3f9c3c1',
+                    'org.apache.struts.taglib.html.TOKEN': '96578d2c031d2d9cc6a33c06ecddf5db',
                     g_i_unit_property: 9,
                     _stn_id: '9903',
                     g_i_insu_cd: '',
@@ -103,9 +103,9 @@ app.factory('dlbxAction', function ($q, webLogs, date, config, actionProxy, base
             return {
                 url: 'http://10.2.3.237:7001/ncpai/report_581717.do',
                 params: _def({
-                    'org.apache.struts.taglib.html.TOKEN': '43dadf39d833c87866b61ff698fdcec1',
+                    'org.apache.struts.taglib.html.TOKEN': '967c72fe342c64ca631b324f2252c612',
                     g_i_unit_property: 9,
-                    _stn_id: '9902',
+                    _stn_id: '9901',
                     g_i_insu_cd: '0099',
                     g_i_unit_scp: '9'
                 }, _ds(subtract, day))
