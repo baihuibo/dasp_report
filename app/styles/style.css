@@ -73,3 +73,12 @@ md-datepicker .md-datepicker-input-container {
   background-color: #f2f2f2;
   border: 1px solid #0f7595;
 }
+
+.capture_date {
+  margin: 0;
+  width: 100px;
+}
+
+.capture_date .md-errors-spacer {
+  display: none;
+}
