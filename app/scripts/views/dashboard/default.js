@@ -27,8 +27,19 @@ app.controller('DashboardCtrl', function ($scope, webList, captures, webLogs, da
         return COLORS[Math.floor(Math.random() * COLORS.length)];
     }
 
+    $scope.captureDay = (+storage.getItem('captureDay')) || 1;
+
     $scope.maxDate = moment().subtract(1, 'day').toDate();
-    $scope.date = moment().subtract(1, 'day').toDate();
+    function setDate() {
+        $scope.date = moment().subtract($scope.captureDay, 'day').toDate();
+    }
+
+    setDate();
+
+    $scope.saveCaptureDay = function () {
+        storage.setItem('captureDay', $scope.captureDay || 1);
+        setDate();
+    };
 
     $scope.tiles = webList.getList();
 
@@ -157,7 +168,7 @@ function getMsg(opt) {
         ed = opt.endDate;
     switch (opt.type) {
         case '0'://一次
-            msg = `${pre} ${formatDate(opt.date)} ${st} 启动`;
+            msg = `${pre} ${formatDate(opt.date)} (${st}) 启动`;
             break;
         case '1'://每天
             msg = `每天 (${st}) 启动,此计划持续时间从 ${formatDate(sd)}  开始 到 ${formatDate(ed)} 结束`;
@@ -166,10 +177,19 @@ function getMsg(opt) {
             msg = `每周 (${getWeek(opt.week)} ${st}) 启动,此计划持续时间从 ${formatDate(sd)}  开始 到 ${formatDate(ed)} 结束`;
             break;
         case '3'://每月
-            msg = `每月 (${opt.days} ${st}) 启动,此计划持续时间从 ${formatDate(sd)}  开始 到 ${formatDate(ed)} 结束`;
+            msg = `每月 (${getDays(opt.days)} ${st}) 启动,此计划持续时间从 ${formatDate(sd)}  开始 到 ${formatDate(ed)} 结束`;
             break;
     }
     return msg;
+}
+
+function getDays(days) {
+    if (days) {
+        return days.map(function (day) {
+                return day + '号'
+            }).join('、') + ' 的 ';
+    }
+    return '';
 }
 
 function formatDate(d) {
@@ -189,7 +209,7 @@ function getWeek(week) {
     if (week) {
         return week.map(function (v) {
             return Week[v];
-        }).join(',');
+            }).join(',') + ' 的 ';
     }
     return '';
 }
