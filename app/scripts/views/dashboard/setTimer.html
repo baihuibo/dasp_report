@@ -23,7 +23,7 @@
                     <md-input-container class="md-block">
                         <label>启动方式</label>
                         <md-select ng-model="opt.type" name="type" required ng-disabled="!enabled">
-                            <md-option value="0">一次</md-option>
+                            <md-option value="0">仅一天</md-option>
                             <md-option value="1">每天</md-option>
                             <md-option value="2">每周</md-option>
                             <md-option value="3">每月</md-option>
@@ -33,7 +33,8 @@
                     <div ng-if="opt.type == 0" layout="row" layout-align="center center">
                         <md-input-container class="md-block" flex>
                             <label>启动时间</label>
-                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                            <cu-time-select ng-model="opt.startTime" multiple required
+                                            ng-disabled="!enabled"></cu-time-select>
                         </md-input-container>
                         <md-datepicker ng-model="opt.date" md-placeholder="选择日期" ng-disabled="!enabled"></md-datepicker>
                     </div>
@@ -41,7 +42,8 @@
                     <div ng-if="opt.type == 1" layout="row">
                         <md-input-container class="md-block" flex>
                             <label>启动时间</label>
-                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                            <cu-time-select ng-model="opt.startTime" multiple required
+                                            ng-disabled="!enabled"></cu-time-select>
                         </md-input-container>
                     </div>
 
@@ -54,7 +56,8 @@
 
                         <md-input-container class="md-block" flex>
                             <label>启动时间</label>
-                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                            <cu-time-select ng-model="opt.startTime" multiple required
+                                            ng-disabled="!enabled"></cu-time-select>
                         </md-input-container>
                     </div>
 
@@ -67,7 +70,8 @@
 
                         <md-input-container class="md-block" flex>
                             <label>启动时间</label>
-                            <cu-time-select ng-model="opt.startTime" required ng-disabled="!enabled"></cu-time-select>
+                            <cu-time-select ng-model="opt.startTime" multiple required
+                                            ng-disabled="!enabled"></cu-time-select>
                         </md-input-container>
                     </div>
 
