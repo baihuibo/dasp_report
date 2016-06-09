@@ -4,7 +4,7 @@
 var pack = require('electron-packager');
 
 pack({
-    arch: 'x64', //ia32 , x64 , all
+    arch: 'ia32', //ia32 , x64 , all
     platform: 'win32', //linux , win32 , darwin , all
     dir: '.',
     //asar: true,

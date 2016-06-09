@@ -19,7 +19,7 @@ app.factory('captures', function (dljrAction, kfjjAction, dlbxAction) {
     return {
         dljr: dljrAction,
         kfjj: kfjjAction,
-        dlbx: dlbxAction
+        dlbx: dlbxAction 
     }
 });
 

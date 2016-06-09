@@ -65,7 +65,7 @@ app.run(function ($rootScope, currentWebContents, currentWindow, fs, iconvLite, 
         }
     });
 
-    timer.registry('23:59', function () {
+    timer.registry('00:05', function () {
         location.reload();//重启系统
     });
 });
